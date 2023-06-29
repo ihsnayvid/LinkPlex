@@ -1,74 +1,98 @@
-import react, { useState } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, styled, Typography } from '@mui/material';
-// import { createPost } from '../service/api.js';
-import { createPost } from '../service/api';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import {addPostAPI, addLinkAPI, deletePostAPI} from '../Service/api';
+function CreatePost() {
+  const [boxes, setBoxes] = useState([]);
+  const [newBoxTitle, setNewBoxTitle] = useState('');
+  const [newLinkName, setNewLinkName] = useState('');
+  const [newLinkURL, setNewLinkURL] = useState('');
+  const [newBoxDescription, setNewBoxDescription] = useState('');
 
-const initialValue = {
-    // links: {name: '', link: ''},
-    name: '',
-    link: '',
-    title: '',
-    description: '',
-    tags: ''
-}
+  const handleNewBoxTitleChange = (e) => {
+    setNewBoxTitle(e.target.value);
+  };
 
-const Container = styled(FormGroup)`
-    width: 50%;
-    margin: 5% 0 0 25%;
-    & > div {
-        margin-top: 20px;
-`;
+  const handleNewLinkNameChange = (e) => {
+    setNewLinkName(e.target.value);
+  };
 
-const CreatePost = () => {
-    const [post, setPost] = useState(initialValue);
-    const { name, link, title, description, tags } = post;
-    let navigate = useNavigate();
+  const handleNewLinkURLChange = (e) => {
+    setNewLinkURL(e.target.value);
+  };
 
-    const onValueChange = (e) => {
-        setPost({...post, [e.target.name]: e.target.value})
+  const handleNewBoxDescriptionChange = (e) => {
+    setNewBoxDescription(e.target.value);
+  };
+
+  const handleAddPostDetails = async (index) =>{
+    try{
+        return await addPostAPI(index);
     }
-
-    const addPostDetails = async() => {
-        await createPost(post);
-        navigate('/');
+    catch(e){
+        console.log(e.message);
     }
+  }
+  const handleAddBox = () => {
+    const newBox = {
+      title: newBoxTitle,
+      links: [],
+      description: newBoxDescription,
+    };
+    setBoxes([...boxes, newBox]);
+    setNewBoxTitle('');
+    setNewBoxDescription('');
+    
+  };
 
-    return (
-        <Container>
-            <Typography variant="h4">Create New Post</Typography>
+  const handleAddLink = (boxIndex) => {
+    const newLink = {
+      name: newLinkName,
+      link: newLinkURL,
+    };
+    const updatedBoxes = [...boxes];
+    updatedBoxes[boxIndex].links.push(newLink);
+    setBoxes(updatedBoxes);
+    setNewLinkName('');
+    setNewLinkURL('');
+  };
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Name</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='name' value={name} id="my-input" />
-            </FormControl>
+  const handleDeleteBox = (boxIndex) => {
+    const updatedBoxes = [...boxes];
+    updatedBoxes.splice(boxIndex, 1);
+    setBoxes(updatedBoxes);
+  };
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Link</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='link' value={link} id="my-input" />
-            </FormControl>
-
-            <FormControl>
-                <InputLabel htmlFor="my-input">Title</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='title' value={title} id="my-input"/>
-            </FormControl>
-
-            <FormControl>
-                <InputLabel htmlFor="my-input">Description</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='description' value={description} id="my-input" />
-            </FormControl>
-
-            <FormControl>
-                <InputLabel htmlFor="my-input">Tags</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='tags' value={tags} id="my-input" />
-            </FormControl>
-
-            <FormControl>
-                <Button variant="contained" color="warning" onClick={() => addPostDetails()}>Create Post</Button>
-            </FormControl>
-
-        </Container>
-    )
+  return (
+    <div>
+      <h1>CreatePost</h1>
+      <div>
+        <h2>Add Post</h2>
+        <input type="text" placeholder="Title" value={newBoxTitle} onChange={handleNewBoxTitleChange} />
+        <input type="text" placeholder="Description" value={newBoxDescription} onChange={handleNewBoxDescriptionChange} />
+        <button onClick={handleAddBox}>Add Post</button>
+      </div>
+      {boxes.map((box, index) => (
+        <div key={index}>
+          <h3>{box.title}</h3>
+          <p>{box.description}</p>
+          <div>
+            <h4>Links:</h4>
+            {box.links.map((link, linkIndex) => (
+              <button key={linkIndex}>
+                <a href={link.link} target="_blank" rel="noopener noreferrer">{link.name}</a>
+              </button>
+            ))}
+          </div>
+          <div>
+            <input type="text" placeholder="Name" value={newLinkName} onChange={handleNewLinkNameChange} />
+            <input type="text" placeholder="URL" value={newLinkURL} onChange={handleNewLinkURLChange} />
+            <button onClick={() => handleAddLink(index)}>Add Link</button>
+          </div>
+          <button onClick={() => handleDeleteBox(index)}>Delete Box</button>
+          <button onClick={() => handleAddPostDetails(index)}>Create Post</button>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default CreatePost;
