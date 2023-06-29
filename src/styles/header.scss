@@ -9,13 +9,15 @@ nav{
     position: sticky;
     z-index: 10;
     top: 0%;
-    background-color: $first;
+    background-color:burlywood;
 
     >h1{
         text-transform: uppercase;
     }
-     
+    
     >main{
+        font-size: 20px;
+        font-weight: bold;
         width: 70%;
         display: flex;
         justify-content: flex-end;

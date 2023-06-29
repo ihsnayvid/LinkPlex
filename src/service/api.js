@@ -10,3 +10,12 @@ export const createPost = async(data) => {
         console.log(e.message);
     }
 }
+
+export const getPosts = async() => {
+    try{
+        return await axios.get(API_URL);
+    }
+    catch(e){
+        console.log(e.message);
+    }
+}
