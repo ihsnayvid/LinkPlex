@@ -1,74 +1,209 @@
-import react, { useState } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, styled, Typography } from '@mui/material';
-// import { createPost } from '../service/api.js';
-import { createPost } from '../service/api';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Box, TextareaAutosize, TextField, Button, Typography, styled } from '@mui/material';
+// import { Link } from 'react-router-dom';
 
-const initialValue = {
-    // links: {name: '', link: ''},
-    name: '',
-    link: '',
+const StyledBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const FormBox = styled(Box)`
+    width:50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const Title = styled(TextField)`
+width:80%;
+margin: 10px 0px;
+`;
+const StyledButtons = styled(Button)`
+    width:80%;
+    margin: 10px 0px;
+    color:white;
+    background:blue;
+`
+const LinksBox = styled(Box)`
+    margin: 10px 0px;
+    width:80%;
+`
+const TagsBox = styled(Box)`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    margin: 10px 0px;
+    width:80%;
+`
+const DangerButton = styled(Button)`
+    background:red;
+    &:hover {
+    background-color: #DE3163;
+  }
+`
+const DescriptionText= styled(TextareaAutosize)`
+    width:80% !important;
+`
+const SubmitButton = styled(Button)`
+    width:80%;
+    background:green;
+    &:hover {
+    background-color: darkgreen;
+  }
+`
+const CreatePost = () => {
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
-    tags: ''
-}
+    links: [],
+    tags: [],
+  });
 
-const Container = styled(FormGroup)`
-    width: 50%;
-    margin: 5% 0 0 25%;
-    & > div {
-        margin-top: 20px;
-`;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-const CreatePost = () => {
-    const [post, setPost] = useState(initialValue);
-    const { name, link, title, description, tags } = post;
-    let navigate = useNavigate();
+  const handleLinkChange = (index, field) => (e) => {
+    const { value } = e.target;
+    setFormData((prevData) => {
+      const links = [...prevData.links];
+      links[index][field] = value;
+      return {
+        ...prevData,
+        links,
+      };
+    });
+};
 
-    const onValueChange = (e) => {
-        setPost({...post, [e.target.name]: e.target.value})
-    }
+const handleTagChange = (index) => (e) => {
+    const { value } = e.target;
+    setFormData((prevData) => {
+      const tags = [...prevData.tags];
+      tags[index] = value;
+      return {
+        ...prevData,
+        tags,
+      };
+    });
+  };
 
-    const addPostDetails = async() => {
-        await createPost(post);
-        navigate('/');
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
 
-    return (
-        <Container>
-            <Typography variant="h4">Create New Post</Typography>
+  const handleAddLink = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      links: [...prevData.links, { name: '', link: '' }],
+    }));
+  };
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Name</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='name' value={name} id="my-input" />
-            </FormControl>
+  const handleDeleteLink = (index) => {
+    setFormData((prevData) => {
+      const links = [...prevData.links];
+      links.splice(index, 1);
+      return {
+        ...prevData,
+        links,
+      };
+    });
+  };
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Link</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='link' value={link} id="my-input" />
-            </FormControl>
+  const handleAddTag = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      tags: [...prevData.tags, ''],
+    }));
+  };
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Title</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='title' value={title} id="my-input"/>
-            </FormControl>
+  const handleDeleteTag = (index) => {
+    setFormData((prevData) => {
+      const tags = [...prevData.tags];
+      tags.splice(index, 1);
+      return {
+        ...prevData,
+        tags,
+      };
+    });
+  };
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Description</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='description' value={description} id="my-input" />
-            </FormControl>
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Tags</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='tags' value={tags} id="my-input" />
-            </FormControl>
 
-            <FormControl>
-                <Button variant="contained" color="warning" onClick={() => addPostDetails()}>Create Post</Button>
-            </FormControl>
+  return (
+    <StyledBox>
+      <Typography variant="h4">Create Post</Typography>
+      <FormBox component="form" onSubmit={handleSubmit}>
+        <Title
+          label="Title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
+        {formData.links.map((link, index) => (
+          <LinksBox key={index} sx={{ display: 'flex', gap: '16px' }}>
+            <TextField
+              label="Name"
+              value={link.name}
+              onChange={handleLinkChange(index, 'name')}
+              required
+            />
+            <TextField
+              label="Link"
+              value={link.link}
+              onChange={handleLinkChange(index, 'link')}
+              required
+            />
+            <DangerButton variant="contained" onClick={() => handleDeleteLink(index)}>
+              Delete
+            </DangerButton>
+          </LinksBox>
+        ))}
+        <StyledButtons variant="contained" onClick={handleAddLink}>
+          Add Links
+        </StyledButtons>
 
-        </Container>
-    )
-}
+        {/* <Typography variant="h5">Tags</Typography> */}
+        {formData.tags.map((tag, index) => (
+          <TagsBox key={index} sx={{ display: 'flex', gap: '16px' }}>
+            <TextField
+              label="Tag"
+              value={tag}
+              onChange={handleTagChange(index)}
+              required
+            />
+            <DangerButton variant="contained" onClick={() => handleDeleteTag(index)}>
+              Delete
+            </DangerButton>
+          </TagsBox>
+        ))}
+        <StyledButtons variant="contained" onClick={handleAddTag}>
+          Add Tags
+        </StyledButtons>
+
+        <DescriptionText
+        //   rowsMin={3}
+        minRows={5}
+          placeholder="Description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+          sx={{ width: '100%', marginTop: '16px', resize: 'vertical' }}
+        />
+
+        <SubmitButton type="submit" variant="contained" color="primary" sx={{ marginTop: '16px' }}>
+          Create Post
+        </SubmitButton>
+      </FormBox>
+    </StyledBox>
+  );
+};
 
 export default CreatePost;

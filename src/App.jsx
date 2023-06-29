@@ -4,7 +4,6 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import CreatePost from "./components/CreatePost";
 
-
 import './styles/App.scss';
 
 function App() {
