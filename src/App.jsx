@@ -17,6 +17,7 @@ function App() {
         <Route path="/createPost" element={<CreatePost/>}/>
       </Routes>
     </Router>
+    
     </>    
   );
 }

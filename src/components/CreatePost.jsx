@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {addPostAPI, addLinkAPI, deletePostAPI} from '../Service/api';
+
 function CreatePost() {
   const [boxes, setBoxes] = useState([]);
   const [newBoxTitle, setNewBoxTitle] = useState('');
@@ -23,13 +23,14 @@ function CreatePost() {
     setNewBoxDescription(e.target.value);
   };
 
-  const handleAddPostDetails = async (index) =>{
-    try{
-        return await addPostAPI(index);
-    }
-    catch(e){
-        console.log(e.message);
-    }
+  const handleAddPostDetails = (index) =>{
+    // try{
+    //     return await addPostAPI(index);
+    // }
+    // catch(e){
+        //     console.log(e.message);
+        // }
+        console.log(boxes);
   }
   const handleAddBox = () => {
     const newBox = {
