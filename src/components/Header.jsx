@@ -8,7 +8,8 @@ const Header = () => {
             <h1> Welcome!!</h1>
             <main>
                 <Link to = {"/"}> Home </Link>
-                <Link to = {"/createPost"}> Create Post </Link>                
+                <Link to = {"/createPost"}> Create Post </Link>       
+                <Link to = {"/login"}> Login / Signup</Link>         
             </main>
         </nav>
     </div>
