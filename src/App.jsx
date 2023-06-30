@@ -33,7 +33,7 @@ function App() {
        
     }
     getAllPosts();
-  }, []);
+  }, [allPosts]);
   return (
     <>
 
