@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Box, TextareaAutosize, TextField, Button, Typography, styled } from '@mui/material';
-// import { Link } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from "../config/firebase";
+
+
 
 const StyledBox = styled(Box)`
   display: flex;
@@ -58,8 +61,9 @@ const CreatePost = () => {
     description: '',
     links: [],
     tags: [],
+    photoURL: '',
   });
-
+  const [user, loading, error] = useAuthState(auth);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -94,6 +98,12 @@ const handleTagChange = (index) => (e) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const photo = auth?.currentUser?.photoURL;
+    // console.log("photo URL is : ", photo);
+    setFormData((prevData) => ({
+      ...prevData,
+      photoURL: photo,
+    }));
     console.log(formData);
   };
 

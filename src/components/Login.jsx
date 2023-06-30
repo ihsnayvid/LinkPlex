@@ -1,6 +1,8 @@
 import React from 'react'
-import { useState, useEffect } from "react";
-// import { useAuthState } from 'firebase-hooks/auth';
+import GoogleButton from 'react-google-button'
+import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, googleProvider } from "../config/firebase";
 import {
   signInWithPopup,
@@ -24,7 +26,6 @@ const SubmitButton = styled(Button)`
   }
 }
 `
-
 const signInWithGoogle = () => {
   try {
     signInWithPopup(auth, googleProvider);
@@ -45,29 +46,22 @@ const logout = async () => {
 
 const Login = () => {
   const [isLogged, setIsLogged] = useState(false);
-  // useEffect(() => {
-  //   const handleClick = () => {
-  //     try{
-  //       signInWithGoogle();
-  //     }
-  //     catch(err){
-  //       console.log(err.message);
-  //     }
-  //   };
-
-  //   handleClick();
-  // }, []);
+  const [user, loading, error] = useAuthState(auth);
+  const navigate = useNavigate();
+  
   const handleClick = () => {
     try{
       console.log(isLogged);
-      if(!isLogged){
+      if(!user){
         signInWithGoogle();
-        setIsLogged(!isLogged);
+        // setIsLogged(!isLogged);
+        navigate('/');
         console.log("logged in successfully");
       }
       else{
         logout();
-        setIsLogged(!isLogged);
+        // setIsLogged(!isLogged);
+        navigate('/');
         console.log("Logged out successfully");
       }
     }
@@ -76,8 +70,14 @@ const Login = () => {
     }
   }
   return (
-    <div>
-    <SubmitButton onClick={handleClick}> Login with Google</SubmitButton>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: '50'
+    }}>
+      <GoogleButton type="dark" onClick={handleClick} />
+      {/* <SubmitButton onClick={handleClick}> Login with Google</SubmitButton> */}
     </div>
   )
 }
