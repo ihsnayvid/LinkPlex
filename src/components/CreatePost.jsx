@@ -42,9 +42,9 @@ const TagsBox = styled(Box)`
     width:80%;
 `
 const DangerButton = styled(Button)`
-    background:red;
+    background:#E30B5C;
     &:hover {
-    background-color: #DE3163;
+    background-color: #FF3131;
   }
 `
 const DescriptionText= styled(TextareaAutosize)`

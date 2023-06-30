@@ -27,7 +27,6 @@ const SubmitButton = styled(Button)`
     background-color: #fff;
   color: #222;
   }
-}
 `
 const signInWithGoogle = async () => {
   try {
@@ -107,9 +106,9 @@ const Login = () => {
 
       
     {!user ? (
-      <GoogleButton type="dark" onClick={handleClick} />
+      <GoogleButton style={{marginTop:"100px"}} type="dark" onClick={handleClick} />
     ) : (
-      <SubmitButton onClick={handleClick}>Logout</SubmitButton>
+      <SubmitButton style={{marginTop:"100px"}} onClick={handleClick}>Logout</SubmitButton>
     )}
     </div>
   )

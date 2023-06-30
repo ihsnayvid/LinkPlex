@@ -13,8 +13,8 @@ const Header = () => {
     else setLogState("Logout");
   }, [user]);
   return (
-    <div>
-        <nav>
+    <div >
+        <nav >
             <h1> Welcome!!</h1>
             <main>
                 <Link to = {"/"}> Home </Link>
