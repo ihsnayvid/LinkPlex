@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, googleProvider } from "../config/firebase";
 import { db } from '../config/firebase';
-import { collection, doc, getDoc, setDoc, addDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 import {
   signInWithPopup,
@@ -55,34 +55,32 @@ const Login = () => {
   const handleClick = async () => {
     try{
       if(!user){
-        signInWithGoogle();
+        await signInWithGoogle();
         
         //ADDING NEW USER TO DB
 
         // Get the user details from the current user
         const { displayName, email, photoURL, uid } = auth.currentUser;
 
+
+          // ------>starts here
         // Check if the user already exists in the 'users' collection
-        const userDoc = await getDoc(doc(userCollectionRef, uid));
+      const userQuerySnapshot = await getDocs(query(userCollectionRef, where('Email', '==', email)));
 
-        if (userDoc.exists()) {
-          console.log("Userdoc exists");
-          // User already exists, continue with your application logic
-          // ...
-        } else {
-          // User is new, add the user details to the 'users' collection
-          
-          await addDoc(userCollectionRef, {
-            Email: email,
-            Name: displayName,
-            Profile: photoURL,
-          });
+      if (userQuerySnapshot.empty) {
+        // User is new, add the user details to the 'users' collection
+        await addDoc(userCollectionRef, {
+          Email: email,
+          Name: displayName,
+          Profile: photoURL,
+        });
 
-          console.log('User added to Firestore collection.');
-        }
+        console.log('User added to Firestore collection.');
+      } else {
+        console.log('User already exists in the database.');
+      }
+        // ---------->ends here
 
-        
-        
         navigate('/');
         console.log("logged in successfully");
       }
