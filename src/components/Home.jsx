@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Box, styled, Typography, Button, TextField } from '@mui/material';
 import { Favorite, Chat } from '@mui/icons-material';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -300,7 +301,11 @@ const Home = ({ data }) => {
       )}
       <SidebarBoxRight>
         <UserImageCircle src={user?.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} />
-        <UserNameButton>{user?.displayName || "Anonymous"}</UserNameButton>
+          <Link to={"/userProfile"}>
+        <UserNameButton>
+          {user?.displayName || "Anonymous"}
+        </UserNameButton>
+          </Link>
         <TopWeb>
         <Typography style={{ textDecoration: 'underline' }}>Top 5 Links</Typography>
           {topWebsites.map((website, index) => (

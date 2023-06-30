@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import CreatePost from "./components/CreatePost";
 import Login from "./components/Login";
+import UserProfile from "./components/UserProfile";
 import { useEffect, useState } from 'react';
 import { db } from './config/firebase';
 import { getDocs, collection } from 'firebase/firestore';
@@ -24,7 +25,7 @@ function App() {
           id: doc.id,
         }));
         setAllPosts(filteredData);
-        console.log(filteredData);
+        // console.log(filteredData);
       }
       catch(err){
         console.log(err.message);
@@ -42,6 +43,7 @@ function App() {
         <Route path="/" element={<Home data={allPosts}/>}/>
         <Route path="/createPost" element={<CreatePost/>}/>
         <Route path="/login" element={<Login/>} />
+        <Route path="/userProfile" element={<UserProfile/>} />
       </Routes>
     </Router>
     </>    
