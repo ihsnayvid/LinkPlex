@@ -4,7 +4,9 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
 import { db } from '../config/firebase';
 import { getDocs, collection, addDoc } from 'firebase/firestore';
-
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css'
 
 
 const StyledBox = styled(Box)`
@@ -78,7 +80,7 @@ const CreatePost = () => {
       [name]: value,
     }));
   };
-
+  
   const handleLinkChange = (index, field) => (e) => {
     const { value } = e.target;
     setFormData((prevData) => {
@@ -92,8 +94,8 @@ const CreatePost = () => {
 };
 
 const handleTagChange = (index) => (e) => {
-    const { value } = e.target;
-    setFormData((prevData) => {
+  const { value } = e.target;
+  setFormData((prevData) => {
       const tags = [...prevData.tags];
       tags[index] = value;
       return {
@@ -102,16 +104,16 @@ const handleTagChange = (index) => (e) => {
       };
     });
   };
-
+  
   const handleSubmit = async(e) => {
     e.preventDefault();
     // console.log("rahul is ",user);
     try{
-
+      
       const photo = user?.photoURL;
       const name = user?.displayName;
       const email = user?.email;
-
+      
       // console.log(auth?.currentUser);
       
       setFormData((prevData) => ({
@@ -124,8 +126,48 @@ const handleTagChange = (index) => (e) => {
       if(formData.photoURL && formData.email && formData.name){
         //db insert
         await addDoc(postsCollectionRef, formData);
-        console.log(formData);      
-        
+        toast.success('Post Created', {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          }); 
+          setTimeout(() => {
+            navigate('/');
+          }, 3000);
+        }
+      else{
+        if(name){
+          toast.info('Press submit button again to confirm submission', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          
+        }else{
+          toast.error('Error! First Login', {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            setTimeout(() => {
+              navigate('/login');
+            }, 3000);
+        }
       }
     }
     catch(err){
@@ -169,6 +211,7 @@ const handleTagChange = (index) => (e) => {
       };
     });
   };
+  const navigate = useNavigate();
 
 
   return (
@@ -238,6 +281,7 @@ const handleTagChange = (index) => (e) => {
           Create Post
         </SubmitButton>
       </FormBox>
+      <ToastContainer />
     </StyledBox>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react'
 import GoogleButton from 'react-google-button'
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, googleProvider } from "../config/firebase";
@@ -76,17 +77,64 @@ const Login = () => {
         });
 
         console.log('User added to Firestore collection.');
+        toast.info('New user created', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          toast.success('Signed in Successfully!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            setTimeout(() => {
+              navigate('/');
+            }, 3000);
+
       } else {
         console.log('User already exists in the database.');
+        toast.success('Signed in Successfully!', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+          setTimeout(() => {
+            navigate('/');
+          }, 3000);
       }
         // ---------->ends here
-
-        navigate('/');
         console.log("logged in successfully");
       }
       else{
-        logout();        
-        navigate('/');
+        await logout();        
+        toast.info('User Logged out', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          setTimeout(() => {
+            navigate('/login');
+          }, 2000);
         console.log("Logged out successfully");
       }
     }
@@ -108,6 +156,7 @@ const Login = () => {
     ) : (
       <SubmitButton style={{marginTop:"100px"}} onClick={handleClick}>Logout</SubmitButton>
     )}
+    <ToastContainer />
     </div>
   )
 }
