@@ -104,7 +104,17 @@ const handleTagChange = (index) => (e) => {
       };
     });
   };
-  
+  useEffect(()=>{
+      const photo = user?.photoURL;
+      const name = user?.displayName;
+      const email = user?.email;
+      setFormData((prevData) => ({
+        ...prevData,
+        photoURL: photo,
+        name: name,
+        email: email,
+      }))
+  },[])
   const handleSubmit = async(e) => {
     e.preventDefault();
     // console.log("rahul is ",user);
@@ -131,7 +141,7 @@ const handleTagChange = (index) => (e) => {
           autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
-          pauseOnHover: true,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
           theme: "colored",
@@ -141,25 +151,12 @@ const handleTagChange = (index) => (e) => {
           }, 3000);
         }
       else{
-        if(name){
-          toast.info('Press submit button again to confirm submission', {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          
-        }else{
           toast.error('Error! First Login', {
             position: "top-center",
             autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
-            pauseOnHover: true,
+            pauseOnHover: false,
             draggable: true,
             progress: undefined,
             theme: "colored",
@@ -169,7 +166,6 @@ const handleTagChange = (index) => (e) => {
             }, 3000);
         }
       }
-    }
     catch(err){
       console.log(err);
     }
