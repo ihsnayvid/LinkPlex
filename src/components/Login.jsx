@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, googleProvider } from "../config/firebase";
+import { db } from '../config/firebase';
+import { collection, doc, getDoc, setDoc, addDoc } from 'firebase/firestore';
+
 import {
   signInWithPopup,
   signInWithRedirect,
@@ -45,22 +48,47 @@ const logout = async () => {
 
 
 const Login = () => {
-  const [isLogged, setIsLogged] = useState(false);
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
+
+  const userCollectionRef = collection(db, "user");
   
-  const handleClick = () => {
+  const handleClick = async () => {
     try{
-      console.log(isLogged);
       if(!user){
         signInWithGoogle();
-        // setIsLogged(!isLogged);
+        
+        //ADDING NEW USER TO DB
+
+        // Get the user details from the current user
+        const { displayName, email, photoURL, uid } = auth.currentUser;
+
+        // Check if the user already exists in the 'users' collection
+        const userDoc = await getDoc(doc(userCollectionRef, uid));
+
+        if (userDoc.exists()) {
+          console.log("Userdoc exists");
+          // User already exists, continue with your application logic
+          // ...
+        } else {
+          // User is new, add the user details to the 'users' collection
+          
+          await addDoc(userCollectionRef, {
+            Email: email,
+            Name: displayName,
+            Profile: photoURL,
+          });
+
+          console.log('User added to Firestore collection.');
+        }
+
+        
+        
         navigate('/');
         console.log("logged in successfully");
       }
       else{
-        logout();
-        // setIsLogged(!isLogged);
+        logout();        
         navigate('/');
         console.log("Logged out successfully");
       }

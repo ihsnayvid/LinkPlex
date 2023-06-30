@@ -4,12 +4,39 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import CreatePost from "./components/CreatePost";
 import Login from "./components/Login";
+import { useEffect, useState } from 'react';
+import { db } from './config/firebase';
+import { getDocs, collection } from 'firebase/firestore';
+
 
 import './styles/App.scss';
 
 function App() {
+  const [allPosts, setAllPosts] = useState([]);
+
+  const postsCollectionRef = collection(db, "Post");
+  useEffect(() =>{
+    const getAllPosts = async () => {
+
+      try{
+        const data = await getDocs(postsCollectionRef);
+        const filteredData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setAllPosts(filteredData);
+        console.log(filteredData);
+      }
+      catch(err){
+        console.log(err.message);
+      }
+       
+    }
+    getAllPosts();
+  }, []);
   return (
     <>
+
     <Router>
       <Header/>
       <Routes>

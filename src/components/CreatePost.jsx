@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, TextareaAutosize, TextField, Button, Typography, styled } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
+import { db } from '../config/firebase';
+import { getDocs, collection, addDoc } from 'firebase/firestore';
 
 
 
@@ -66,7 +68,8 @@ const CreatePost = () => {
     email: '',
   });
   const [user, loading, error] = useAuthState(auth);
-  
+  const postsCollectionRef = collection(db, "Post");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -99,23 +102,36 @@ const handleTagChange = (index) => (e) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    const photo = auth?.currentUser?.photoURL;
-    const name = auth?.currentUser?.displayName;
-    const email = auth?.currentUser?.email;
-    console.log(auth?.currentUser);
-    console.log("photo URL is:", photo);
-    setFormData((prevData) => ({
-      ...prevData,
-      photoURL: photo,
-      name: name,
-      email: email,
-    }));
-    if(formData.photoURL && formData.email && formData.name){
-      //db insert
-      console.log(formData);
+
+    try{
+
+      const photo = auth?.currentUser?.photoURL;
+      const name = auth?.currentUser?.displayName;
+      const email = auth?.currentUser?.email;
+
+      // console.log(auth?.currentUser);
+      // console.log("photo URL is:", photo);
+
+      setFormData((prevData) => ({
+        ...prevData,
+        photoURL: photo,
+        name: name,
+        email: email,
+      }));
+      
+      if(formData.photoURL && formData.email && formData.name){
+        //db insert
+        await addDoc(postsCollectionRef, formData);
+        console.log(formData);      
+        
+      }
     }
+    catch(err){
+      console.log(err);
+    }
+    
   };
 
   const handleAddLink = () => {

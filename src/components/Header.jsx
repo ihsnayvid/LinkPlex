@@ -8,7 +8,6 @@ import { auth } from "../config/firebase";
 const Header = () => {
   const [logState, setLogState] = useState("Login");
   const [user, loading, error] = useAuthState(auth);
-  console.log('Value of user is: ' ,user);
   useEffect(() =>{
     if(!user) setLogState("Login");
     else setLogState("Logout");
