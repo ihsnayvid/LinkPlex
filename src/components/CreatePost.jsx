@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextareaAutosize, TextField, Button, Typography, styled } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
@@ -62,8 +62,11 @@ const CreatePost = () => {
     links: [],
     tags: [],
     photoURL: '',
+    name: '',
+    email: '',
   });
   const [user, loading, error] = useAuthState(auth);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -99,12 +102,20 @@ const handleTagChange = (index) => (e) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const photo = auth?.currentUser?.photoURL;
-    // console.log("photo URL is : ", photo);
+    const name = auth?.currentUser?.displayName;
+    const email = auth?.currentUser?.email;
+    console.log(auth?.currentUser);
+    console.log("photo URL is:", photo);
     setFormData((prevData) => ({
       ...prevData,
       photoURL: photo,
+      name: name,
+      email: email,
     }));
-    console.log(formData);
+    if(formData.photoURL && formData.email && formData.name){
+      //db insert
+      console.log(formData);
+    }
   };
 
   const handleAddLink = () => {
@@ -142,7 +153,6 @@ const handleTagChange = (index) => (e) => {
       };
     });
   };
-
 
 
   return (

@@ -26,9 +26,9 @@ const SubmitButton = styled(Button)`
   }
 }
 `
-const signInWithGoogle = () => {
+const signInWithGoogle = async () => {
   try {
-    signInWithPopup(auth, googleProvider);
+    await signInWithPopup(auth, googleProvider);
   } catch (err) {
     console.error(err);
   }
@@ -76,8 +76,13 @@ const Login = () => {
       justifyContent: 'center',
       marginTop: '50'
     }}>
+
+      
+    {!user ? (
       <GoogleButton type="dark" onClick={handleClick} />
-      {/* <SubmitButton onClick={handleClick}> Login with Google</SubmitButton> */}
+    ) : (
+      <SubmitButton onClick={handleClick}>Logout</SubmitButton>
+    )}
     </div>
   )
 }
