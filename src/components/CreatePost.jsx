@@ -67,7 +67,8 @@ const CreatePost = () => {
     name: '',
     email: '',
   });
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth)
+  // console.log("error is ",user)
   const postsCollectionRef = collection(db, "Post");
 
   const handleChange = (e) => {
@@ -104,16 +105,15 @@ const handleTagChange = (index) => (e) => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-
+    // console.log("rahul is ",user);
     try{
 
-      const photo = auth?.currentUser?.photoURL;
-      const name = auth?.currentUser?.displayName;
-      const email = auth?.currentUser?.email;
+      const photo = user?.photoURL;
+      const name = user?.displayName;
+      const email = user?.email;
 
       // console.log(auth?.currentUser);
-      // console.log("photo URL is:", photo);
-
+      
       setFormData((prevData) => ({
         ...prevData,
         photoURL: photo,

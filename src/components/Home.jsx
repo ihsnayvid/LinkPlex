@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, styled, Typography, Button, TextField } from '@mui/material';
 import { Favorite, Chat } from '@mui/icons-material';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from "../config/firebase";
+
 
 const topWebsites = [
   {
@@ -161,54 +164,50 @@ const HeaderBox = styled(Box)`
   margin:0;
   background:#FF6F61;
 `
-
 const FeedItem = ({ item }) => {
+  const { description, email, id, links, name, photoURL, tags, title } = item;
+  // console.log("here")
   return (
     <StyledBox>
       <HeaderBox display="flex" alignItems="center" marginBottom={1}>
-        <UserImage src={item.userImage} alt="User" />
-        <Typography variant="body1">{item.username}</Typography>
-        <Typography variant="body2" marginLeft={1} color="textSecondary">
-          {item.Time}
-        </Typography>
+        <UserImage src={photoURL} alt="User" />
+        <Typography variant="body1">{name}</Typography>
       </HeaderBox>
       <Typography marginX={2} variant="h6" gutterBottom>
-        {item.Title}
+        {title}
       </Typography>
-      {/* <Box marginBottom={1}> */}
-        {/* Rest of the code */}
-        <Box marginBottom={1} marginX={2}>
-         {item.Links.map((link, index) => (
-           <Button
-             key={index}
-             variant="outlined"
-             color="primary"
-             href={link.link}
-             target="_blank"
-             rel="noopener noreferrer"
-             style={{ marginRight: '8px', marginBottom: '8px' }}
-           >
-             {link.name}
-           </Button>
-         ))}
-       </Box>
-       <Box marginBottom={1} marginX={2}>
-         {item.Tags.map((tag, index) => (
-           <Typography
-             key={index}
-             variant="body2"
-             component="span"
-             style={{ marginRight: '8px' }}
-           >
-             #{tag}
-           </Typography>
-         ))}
-       </Box>
+      <Box marginBottom={1} marginX={2}>
+        {links?.map((link, index) => (
+          <Button
+            key={index}
+            variant="outlined"
+            color="primary"
+            href={link.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ marginRight: '8px', marginBottom: '8px' }}
+          >
+            {link.name}
+          </Button>
+        ))}
+      </Box>
+      <Box marginBottom={1} marginX={2}>
+        {tags?.map((tag, index) => (
+          <Typography
+            key={index}
+            variant="body2"
+            component="span"
+            style={{ marginRight: '8px' }}
+          >
+            #{tag}
+          </Typography>
+        ))}
+      </Box>
       <Typography variant="body1" marginX={2} paragraph>
-        {item.Discription}
+        {description}
       </Typography>
-      <ToolBox paddingY={2} paddingX={1}  borderTop={1}>
-        <LikeIcon  sx={{ marginRight: '8px' }} />
+      <ToolBox paddingY={2} paddingX={1} borderTop={1}>
+        <LikeIcon sx={{ marginRight: '8px' }} />
         <CommentIcon />
       </ToolBox>
     </StyledBox>
@@ -216,40 +215,51 @@ const FeedItem = ({ item }) => {
 };
 
 const Home = ({ data }) => {
+  // useEffect
+  // console.log(data)
+  const [user,isLoading,error] = useAuthState(auth);
+  // console.log(user)
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('title');
   const filterData = () => {
     if (searchQuery === '') {
       return data;
     } else {
-      return data.filter(
+      return data?.filter(
         (item) =>
-          item.Title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.Tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
+        item?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item?.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
+      }
   };
-  
   const sortData = (filteredData) => {
     return (filteredData ?? []).sort((a, b) => {
       if (sortOption === 'title') {
-        return a.Title.localeCompare(b.Title);
-      } else if (sortOption === 'time') {
-        return a.Time.localeCompare(b.Time);
+        const titleA = a.title ?? '';
+        const titleB = b.title ?? '';
+        return titleA.localeCompare(titleB);
+      } else if (sortOption === 'links') {
+        const linksA = a.links?.length ?? 0;
+        const linksB = b.links?.length ?? 0;
+        return linksB - linksA;
       }
       return 0;
     });
   };
-
+  
+  
+  
+  
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  // const handleSortChange = (event) => {
-  //   setSortOption(event.target.value);
-  // };
+  const handleSortChange = (event) => {
+      setSortOption(event.target.value);
+  };
   
   const filteredData = filterData();
+  //  console.log(filteredData)
   const sortedData = sortData(filteredData);
   
   return (
@@ -265,34 +275,32 @@ const Home = ({ data }) => {
       </Box>
       <Box marginBottom={2}>
         <Typography variant="body1">Sort By:</Typography>
-        <Button
-          variant={sortOption === 'title' ? 'contained' : 'outlined'}
-          onClick={() => setSortOption('title')}
-          style={{ marginRight: '8px' }}
-        >
+          <Button
+            variant={sortOption === 'title' ? 'contained' : 'outlined'}
+            onClick={() => setSortOption('title')}
+            style={{ marginRight: '8px' }}
+          >
           Title
-        </Button>
-        <Button
-          variant={sortOption === 'time' ? 'contained' : 'outlined'}
-          onClick={() => setSortOption('time')}
-        >
-          Time
-        </Button>
+          </Button>
+          <Button
+            variant={sortOption === 'links' ? 'contained' : 'outlined'}
+            onClick={() => setSortOption('links')}
+          >
+          Links
+          </Button>
       </Box>
+
     </SidebarBoxLeft>
-      {/* {sortedData.map((item, index) => (
-        <FeedItem key={index} item={item} />
-      ))} */}
       {data && data.length > 0 ? (
-        sortedData.map((item, index) => (
-          <FeedItem key={index} item={item} />
-        ))
+        sortedData?.map((item, index) => <FeedItem key={index} item={item} />)
       ) : (
-        <Typography variant="body1" marginTop={10}>No data available.</Typography>
+        <Typography variant="body1" marginTop={10}>
+          No data available.
+        </Typography>
       )}
       <SidebarBoxRight>
-        <UserImageCircle src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"/>
-        <UserNameButton>Rahul Poddar</UserNameButton>
+        <UserImageCircle src={user?.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} />
+        <UserNameButton>{user?.displayName || "Anonymous"}</UserNameButton>
         <TopWeb>
         <Typography style={{ textDecoration: 'underline' }}>Top 5 Links</Typography>
           {topWebsites.map((website, index) => (
