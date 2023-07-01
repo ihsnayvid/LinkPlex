@@ -23,7 +23,6 @@ const ProfileCard = styled(Card)`
 const ArtistImage = styled(CardMedia)`
   width: 100px;
   height: 100px;
-//   ${'' /* border:4px solid rgb(39,39,39); */}
   border-radius: 50%;
   margin-top: 16px;
 `;

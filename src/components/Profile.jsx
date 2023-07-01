@@ -1,7 +1,11 @@
 import React, { useEffect, useState} from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import FeedItem from './FeedItem';
+import UserBoxY from './UserBoxY';
+import { Box, Typography} from '@mui/material';
+
 
 const Profile = () => {
     const { email, name, photoURL } = useParams();
@@ -44,16 +48,18 @@ const Profile = () => {
     }, []);
 
     return (
-        <div style={{ marginTop: "100px" }}>
-  {userPosts.map((post, index) => (
-    <div key={index}>
-      <h3>{post.title}</h3>
-      <p>{post.name}</p>
-      <p>Photo URL: {userProfile}</p>
-    </div>
-  ))}
-</div>
-
+        <>
+            <UserBoxY photoURL={userProfile} email={userEmail} displayName={userName} />
+            <Box display="flex" flexWrap="wrap" >
+            {userPosts && userPosts.length > 0 ? (
+            userPosts?.map((item, index) => <FeedItem key={index} item={item} />)
+            ) : (
+            <Typography variant="body1" marginTop={10}>
+                No data available.
+            </Typography>
+            )}
+            </Box>
+        </>
     )
 }
 
