@@ -86,7 +86,9 @@ const FeedItem = ({ item }) => {
         <HeaderBox display="flex" alignItems="center" justifyContent="space-between" marginBottom={1}>
         <Box display="flex" alignItems="center">
           <UserImage src={photoURL} alt="User" />
-          <Typography variant="body1">{name}</Typography>
+          <Link to={`/profile/${encodeURIComponent(email)}/${encodeURIComponent(name)}/${encodeURIComponent(photoURL)}`}>
+            <Typography style={{ textDecoration: "none", cursor: "pointer" }} variant="body1">{name}</Typography>
+          </Link>
         </Box>
         {isUserPost && <DeleteButton onClick={handleDelete} />} {/* Render the delete button only for the user's post */}
         </HeaderBox>
