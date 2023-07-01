@@ -143,8 +143,8 @@ const CreatePost = () => {
   };
   const [user, loading, error] = useAuthState(auth)
   useEffect(()=>{
-    console.log("error is ",user)
-    console.log("effect from createpost");
+    // console.log("error is ",user)
+    // console.log("effect from createpost");
       const photo = user?.photoURL;
       const name = user?.displayName;
       const email = user?.email;
@@ -198,7 +198,7 @@ const CreatePost = () => {
           return;
       }
       if(formData.photoURL && formData.email && formData.name){
-        console.log("post created");
+        // console.log("post created");
         await addDoc(postsCollectionRef, formData);
         toast.success('Post Created', {
           position: "top-center",
@@ -231,7 +231,7 @@ const CreatePost = () => {
         }
       }
     catch(err){
-      console.log(err);
+      // console.log(err);
     }
 
   };

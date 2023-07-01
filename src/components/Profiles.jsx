@@ -66,7 +66,7 @@ const SearchBox = styled(TextField)`
         // console.log(filteredData);
       }
       catch(err){
-        console.log(err.message);
+        // console.log(err.message);
       }
        
     }

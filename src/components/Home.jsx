@@ -161,7 +161,7 @@ const Home = () => {
     const postsCollectionRef = collection(db, "Post");
     try{
       const data = await getDocs(postsCollectionRef);
-      console.log("counting")
+      // console.log("counting")
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -170,12 +170,11 @@ const Home = () => {
       // console.log(filteredData);
     }
     catch(err){
-      console.log(err.message);
+      // console.log(err.message);
     }
      
   }
   useEffect(() =>{
-    // console.log("effect from app");
     getAllPosts();
   }, []);
   
@@ -204,6 +203,10 @@ const Home = () => {
           onChange={handleSearchChange}
           variant="outlined"
         />
+          {
+
+    console.log("Home",allPosts)
+          }
       </Box>
       <Box marginBottom={2}>
         <Typography variant="body1">Sort By:</Typography>

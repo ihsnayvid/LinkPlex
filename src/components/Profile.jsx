@@ -14,41 +14,49 @@ const Profile = () => {
     const userEmail = decodeURIComponent(email);
     const userName = decodeURIComponent(name);
     const userProfile = decodeURIComponent(photoURL);
-    console.log('user email is', userEmail);
-    console.log('user name is', userName);
-    console.log('user photoURL is', userProfile);
+    // console.log('user email is', userEmail);
+    // console.log('user name is', userName);
+    // console.log('user photoURL is', userProfile);
     useEffect(() => {
         (async () => {
 
             const getUser = async () => {
                 if (userEmail) {
                     const postsCollectionRef = collection(db, 'Post');
-                    console.log(userEmail);
+                    // console.log(userEmail);
                     try {
                         // Query the posts collection to fetch posts by the current user's email
                         const userPostsQuery = query(postsCollectionRef, where('email', '==', userEmail));
                         const querySnapshot = await getDocs(userPostsQuery);
 
                         // Extract the post data from the query snapshot
-                        const posts = querySnapshot.docs.map((doc) => doc.data());
+                        const posts = querySnapshot.docs.map((doc) => ({
+                            ...doc.data(),
+                            id: doc.id,
+                          }));
+                        // const posts = querySnapshot.docs.map((doc) => doc.data());
                         setUserPosts(posts);
-                        console.log('fetched the users posts');
+                        // console.log('fetched the users posts');
                     }
                     catch (error) {
-                        console.log('Error fetching user posts:', error);
+                        // console.log('Error fetching user posts:', error);
                     }
                 }
             };
 
             if (userEmail) {
                 await getUser();
-                console.log(userPosts);
+                // console.log(userPosts);
             }
         })();
+        // console.log("hello")
     }, []);
 
     return (
         <>
+        {
+            console.log("Profile",userPosts)
+        }
             <UserBoxY photoURL={userProfile} email={userEmail} displayName={userName} />
             <Box display="flex" flexWrap="wrap" >
             {userPosts && userPosts.length > 0 ? (

@@ -314,7 +314,7 @@ const FeedItem = ({ item }) => {
   
           setLikesCount(likesQuerySnapshot.size);
         } catch (error) {
-          console.error("Error fetching like state:", error);
+          // console.error("Error fetching like state:", error);
         }
       };
   
@@ -327,7 +327,7 @@ const FeedItem = ({ item }) => {
   
           setCommentsCount(commentsQuerySnapshot.size);
         } catch (error) {
-          console.error("Error fetching comments count:", error);
+          // console.error("Error fetching comments count:", error);
         }
       };
   
@@ -346,7 +346,7 @@ const FeedItem = ({ item }) => {
           setIsLiked(false);
           setLikesCount(likesCount - 1);
         } catch (error) {
-          console.error("Error removing like:", error);
+          // console.error("Error removing like:", error);
         }
       } else {
         try {
@@ -358,7 +358,7 @@ const FeedItem = ({ item }) => {
           setIsLiked(true);
           setLikesCount(likesCount + 1);
         } catch (error) {
-          console.error("Error adding like:", error);
+          // console.error("Error adding like:", error);
         }
       }
     };

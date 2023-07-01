@@ -7,7 +7,7 @@ export const createPost = async(data) => {
         return await axios.post(API_URL, data);
     }
     catch(e){
-        console.log(e.message);
+        // console.log(e.message);
     }
 }
 
@@ -16,6 +16,6 @@ export const getPosts = async() => {
         return await axios.get(API_URL);
     }
     catch(e){
-        console.log(e.message);
+        // console.log(e.message);
     }
 }

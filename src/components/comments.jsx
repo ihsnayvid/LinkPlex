@@ -58,7 +58,7 @@ const Comments = () => {
       const docRef = doc(db, 'Post', postId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
+        // console.log('Document data:', docSnap.data());
         setPost(docSnap.data());
       }
     };
@@ -107,7 +107,7 @@ const Comments = () => {
       setComments([...comments, newComment]);
       setCommentText('');
     } catch (error) {
-      console.error('Error adding comment: ', error);
+      // console.error('Error adding comment: ', error);
     }
   };
 
@@ -119,7 +119,7 @@ const Comments = () => {
       );
       setComments(updatedComments);
     } catch (error) {
-      console.error('Error deleting comment: ', error);
+      // console.error('Error deleting comment: ', error);
     }
   };
 
