@@ -88,7 +88,6 @@ const SearchBox = styled(TextField)`
             <ArtistImage image={artist.Profile} alt={artist.Name} />
             <CardContent >
             <Link to={`/profile/${encodeURIComponent(artist.Email)}/${encodeURIComponent(artist.Name)}/${encodeURIComponent(artist.Profile)}`}>                
-              {/* <Link to = {`/profile/${artist.Email}/${artist.Name}`}>                 */}
               <NameButton  variant="contained" color="primary">
                 {artist.Name}
               </NameButton>
