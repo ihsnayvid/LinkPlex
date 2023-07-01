@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, styled, Typography, Button, TextField } from '@mui/material';
-import { Favorite, Chat } from '@mui/icons-material';
+import { Favorite, Chat, Delete } from '@mui/icons-material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from '../config/firebase';
 
 
 const topWebsites = [
@@ -50,7 +52,11 @@ const TopWeb = styled(Box)`
   background:white;
   border: 4px solid rgb(39,39,39);
   box-shadow: 0.7rem 0.7rem rgb(26,26,26);
+  ${'' /* position:relative; */}
   ${'' /* height:50%; */}
+`;
+const DeleteButton = styled(Delete)`
+  cursor:pointer;
 `;
 
 const WebsiteBox = styled(Box)`
@@ -167,12 +173,22 @@ const HeaderBox = styled(Box)`
 `
 const FeedItem = ({ item }) => {
   const { description, email, id, links, name, photoURL, tags, title } = item;
+  const [user] = useAuthState(auth);
+  const isUserPost = user && user.email === email;
+  const handleDelete =async () => {
+    console.log('haha')
+    await deleteDoc(doc(db, "Post", id));
+  };
+
   // console.log("here")
   return (
     <StyledBox>
-      <HeaderBox display="flex" alignItems="center" marginBottom={1}>
+      <HeaderBox display="flex" alignItems="center" justifyContent="space-between" marginBottom={1}>
+      <Box display="flex" alignItems="center">
         <UserImage src={photoURL} alt="User" />
         <Typography variant="body1">{name}</Typography>
+      </Box>
+      {isUserPost && <DeleteButton onClick={handleDelete} />} {/* Render the delete button only for the user's post */}
       </HeaderBox>
       <Typography marginX={2} variant="h6" gutterBottom>
         {title}
@@ -217,6 +233,7 @@ const FeedItem = ({ item }) => {
 
 const Home = ({ data }) => {
   // useEffect
+  
   // console.log(data)
   const [user,isLoading,error] = useAuthState(auth);
   // console.log(user)

@@ -109,10 +109,7 @@ const CreatePost = () => {
     name: '',
     email: '',
   });
-  const [user, loading, error] = useAuthState(auth)
-  // console.log("error is ",user)
-  const postsCollectionRef = collection(db, "Post");
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -131,12 +128,12 @@ const CreatePost = () => {
         links,
       };
     });
-};
+  };
 
-const handleTagChange = (index) => (e) => {
-  const { value } = e.target;
+  const handleTagChange = (index) => (e) => {
+    const { value } = e.target;
   setFormData((prevData) => {
-      const tags = [...prevData.tags];
+    const tags = [...prevData.tags];
       tags[index] = value;
       return {
         ...prevData,
@@ -144,7 +141,10 @@ const handleTagChange = (index) => (e) => {
       };
     });
   };
+  const [user, loading, error] = useAuthState(auth)
   useEffect(()=>{
+    console.log("error is ",user)
+    console.log("effect from createpost");
       const photo = user?.photoURL;
       const name = user?.displayName;
       const email = user?.email;
@@ -156,17 +156,18 @@ const handleTagChange = (index) => (e) => {
       }))
   },[])
   const handleSubmit = async(e) => {
+    const postsCollectionRef = collection(db, "Post");
     e.preventDefault();
     try{
-      const photo = user?.photoURL;
-      const name = user?.displayName;
-      const email = user?.email;
-      setFormData((prevData) => ({
-        ...prevData,
-        photoURL: photo,
-        name: name,
-        email: email,
-      }));
+      // const photo = user?.photoURL;
+      // const name = user?.displayName;
+      // const email = user?.email;
+      // setFormData((prevData) => ({
+      //   ...prevData,
+      //   photoURL: photo,
+      //   name: name,
+      //   email: email,
+      // }));
       if(formData.links.length>0){
         const isValid = validateLinks(formData.links);
         if (!isValid) {

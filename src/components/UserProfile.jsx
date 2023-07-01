@@ -9,6 +9,7 @@ const UserProfile = () => {
   const [user] = useAuthState(auth);
 
   useEffect( () => {
+    console.log("effect from user profile");
     (async () => {
 
       const fetchUserPosts = async () => {
@@ -18,7 +19,7 @@ const UserProfile = () => {
   
           try {
             // Query the posts collection to fetch posts by the current user's email
-            const userPostsQuery = await query(postsCollectionRef, where('email', '==', userEmail));
+            const userPostsQuery = query(postsCollectionRef, where('email', '==', userEmail));
             const querySnapshot = await getDocs(userPostsQuery);        
 
             // Extract the post data from the query snapshot
@@ -36,12 +37,20 @@ const UserProfile = () => {
       console.log(userPosts);
     }
     })();
-}, [user]);
+}, []);
 
 
   return (
-    <div>
-      
+    <div style={{marginTop:"100px"}}>
+      {
+        userPosts.map((post) => (
+          <div key={post.id}>
+            <h1>{post.title}</h1>
+            <p>{post.description}</p>
+            <p>{post.email}</p>
+          </div>
+        ))
+      }
     </div>
   );
 };
