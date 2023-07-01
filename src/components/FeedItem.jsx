@@ -4,7 +4,7 @@ import { Box, styled, Typography, Button, TextField } from '@mui/material';
 import { Favorite, Chat, Delete } from '@mui/icons-material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
-import { doc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, deleteDoc ,getDoc ,setDoc } from "firebase/firestore";
 import { db } from '../config/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -16,6 +16,8 @@ const DeleteButton = styled(Delete)`
 
 
 const StyledBox = styled(Box)`
+  cursor:pointer;
+  user-select: none;
   display: flex;
   background-color:#F5E9CF;
   flex-direction: column;
@@ -39,7 +41,8 @@ const UserImage = styled('img')`
 `;
 
 const LikeIcon = styled(Favorite)`
-  color: red;
+  ${'' /* color: white; */}
+  cursor:pointer;
 `;
 
 const CommentIcon = styled(Chat)`
@@ -59,9 +62,85 @@ const HeaderBox = styled(Box)`
 
 
 const FeedItem = ({ item }) => {
+    const [likesCount, setLikesCount] = useState(0);
+    const [isLiked, setIsLiked] = useState(false);
     const { description, email, id, links, name, photoURL, tags, title } = item;
     const [user] = useAuthState(auth);
     const isUserPost = user && user.email === email;
+    
+useEffect(() => {
+  // Fetch the initial like state for the post
+  const fetchLikeState = async () => {
+    try {
+      const userId= user?.email;
+      const postId= id;
+      // Check if the user's ID and the post's ID exist in the "likes" collection
+      const likeDocRef = doc(db, "likes", `${userId}_${postId}`);
+      const likeDocSnapshot = await getDoc(likeDocRef);
+      // Update the `isLiked` state based on the fetched like state
+      setIsLiked(likeDocSnapshot.exists());
+
+      const likesQuery = query(collection(db, 'likes'), where('postId', '==', postId));
+    const likesQuerySnapshot = await getDocs(likesQuery);
+
+    // Get the count of documents in the query snapshot
+    const likesCount = likesQuerySnapshot.size;
+
+    // Update the likesCount state or perform any necessary action
+    setLikesCount(likesCount);
+      
+    } catch (error) {
+      console.error("Error fetching like state:", error);
+    }
+  };
+
+  fetchLikeState();
+}, []);
+
+
+    const toggleLike = async () => {
+      const userId= user?.email;
+      const postId= id;
+      if (isLiked) {
+        // If the post is already liked, remove the like entry from the "likes" collection and update the likesCount state
+        
+        try {
+          // Remove the like entry from the "likes" collection
+          await deleteDoc(doc(db, "likes", `${userId}_${postId}`));
+
+          // Update the `isLiked` state to false
+          setIsLiked(false);
+          
+          // Update the likesCount state accordingly
+          setLikesCount(likesCount - 1);
+        } catch (error) {
+          console.error("Error removing like:", error);
+        }
+      } else {
+        // If the post is not liked, add a new like entry to the "likes" collection and update the likesCount state
+
+        try {
+          // Add a new like entry to the "likes" collection
+          await setDoc(doc(db, "likes", `${userId}_${postId}`), {
+            email: userId,
+            postId: postId
+          });
+
+          // Update the `isLiked` state to true
+          setIsLiked(true);
+
+          // Update the likesCount state accordingly
+          setLikesCount(likesCount + 1);
+        } catch (error) {
+          console.error("Error adding like:", error);
+        }
+      }
+    };
+
+    const handleDoubleClick = () => {
+      toggleLike();
+    };
+    
     const handleDelete =async () => {
       console.log('haha')
       await deleteDoc(doc(db, "Post", id));
@@ -81,7 +160,7 @@ const FeedItem = ({ item }) => {
     };
   
     return (
-      <StyledBox>
+      <StyledBox onDoubleClick={handleDoubleClick}>
       <ToastContainer />
         <HeaderBox display="flex" alignItems="center" justifyContent="space-between" marginBottom={1}>
         <Box display="flex" alignItems="center">
@@ -126,7 +205,14 @@ const FeedItem = ({ item }) => {
           {description}
         </Typography>
         <ToolBox paddingY={2} paddingX={1} borderTop={1}>
-          <LikeIcon sx={{ marginRight: '8px' }} />
+        { likesCount }
+          <LikeIcon 
+          onClick={toggleLike}
+          sx={{ marginRight: '8px' }}
+          color={isLiked ? 'error' : 'disabled'}
+          size="small"
+          aria-label="Like"
+           />
           <CommentIcon />
         </ToolBox>
       </StyledBox>
