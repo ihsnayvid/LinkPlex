@@ -52,7 +52,7 @@ const UserProfile = () => {
         userPosts?.map((item, index) => <FeedItem key={index} item={item} />)
       ) : (
         <Typography variant="body1" marginTop={10}>
-          No data available.
+          No Posts available.
         </Typography>
       )}
     </Box>

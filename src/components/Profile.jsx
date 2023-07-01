@@ -54,8 +54,8 @@ const Profile = () => {
             {userPosts && userPosts.length > 0 ? (
             userPosts?.map((item, index) => <FeedItem key={index} item={item} />)
             ) : (
-            <Typography variant="body1" marginTop={10}>
-                No data available.
+            <Typography variant="body1" marginTop={10} marginX={60}>
+                No Posts available.
             </Typography>
             )}
             </Box>
