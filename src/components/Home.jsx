@@ -6,6 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from '../config/firebase';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const topWebsites = [
@@ -52,8 +53,6 @@ const TopWeb = styled(Box)`
   background:white;
   border: 4px solid rgb(39,39,39);
   box-shadow: 0.7rem 0.7rem rgb(26,26,26);
-  ${'' /* position:relative; */}
-  ${'' /* height:50%; */}
 `;
 const DeleteButton = styled(Delete)`
   cursor:pointer;
@@ -178,11 +177,25 @@ const FeedItem = ({ item }) => {
   const handleDelete =async () => {
     console.log('haha')
     await deleteDoc(doc(db, "Post", id));
+    toast.error('Post Deleted !', {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+      setTimeout(()=>{
+        window.location.reload();
+      },3000)
   };
 
   // console.log("here")
   return (
     <StyledBox>
+    <ToastContainer />
       <HeaderBox display="flex" alignItems="center" justifyContent="space-between" marginBottom={1}>
       <Box display="flex" alignItems="center">
         <UserImage src={photoURL} alt="User" />
