@@ -3,6 +3,32 @@ import { db } from '../config/firebase';
 import { auth } from "../config/firebase";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { Box, Typography, styled } from '@mui/material';
+import FeedItem from './FeedItem';
+
+const UserBox = styled(Box)`
+  height:45vh;
+  display: flex;
+  align-items: center;
+  justify-content:space-around;
+  background:#FFD0D0;
+  margin-top:30px;
+  border-bottom:4px solid rgb(39,39,39);
+`;
+
+const UserImageCircle = styled('img')`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-right: 8px;
+`;
+
+const UserInfoBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+`;
+
+
 
 const UserProfile = () => {
   const [userPosts, setUserPosts] = useState([]);
@@ -41,16 +67,25 @@ const UserProfile = () => {
 
 
   return (
-    <div style={{marginTop:"100px"}}>
-      {
-        userPosts.map((post) => (
-          <div key={post.id}>
-            <h1>{post.title}</h1>
-            <p>{post.description}</p>
-            <p>{post.email}</p>
-          </div>
-        ))
-      }
+    <div>
+    <Box>
+    <UserBox>
+      <UserImageCircle src={user?.photoURL} alt="User" />
+      <UserInfoBox>
+        <Typography variant="h4" >{user?.email}</Typography>
+        <Typography variant="h6">{user?.displayName}</Typography>
+      </UserInfoBox>
+    </UserBox>
+    <Box display="flex" flexWrap="wrap" >
+    {userPosts && userPosts.length > 0 ? (
+        userPosts?.map((item, index) => <FeedItem key={index} item={item} />)
+      ) : (
+        <Typography variant="body1" marginTop={10}>
+          No data available.
+        </Typography>
+      )}
+    </Box>
+    </Box>
     </div>
   );
 };

@@ -43,7 +43,7 @@ function App() {
     <Router>
       <Header/>
       <Routes>
-        <Route path="/" element={<Home data={allPosts}/>}/>
+        <Route path="/" element={<Home/>}/>
         <Route path="/createPost" element={<CreatePost/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/userProfile" element={<UserProfile/>}/>
