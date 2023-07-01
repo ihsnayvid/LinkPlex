@@ -5,6 +5,7 @@ import CreatePost from "./components/CreatePost";
 import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import Profiles from "./components/Profiles";
+import Profile from "./components/Profile";
 import { useEffect, useState } from 'react';
 import { db } from './config/firebase';
 import { getDocs, collection } from 'firebase/firestore';
@@ -19,7 +20,7 @@ function App() {
     const postsCollectionRef = collection(db, "Post");
     try{
       const data = await getDocs(postsCollectionRef);
-      console.log("counting")
+      // console.log("counting")
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -33,7 +34,7 @@ function App() {
      
   }
   useEffect(() =>{
-    console.log("effect from app");
+    // console.log("effect from app");
     getAllPosts();
   }, []);
   return (
@@ -44,9 +45,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Home data={allPosts}/>}/>
         <Route path="/createPost" element={<CreatePost/>}/>
-        <Route path="/login" element={<Login/>} />
-        <Route path="/userProfile" element={<UserProfile/>} />
-        <Route path="/profiles" element={<Profiles/>} />
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/userProfile" element={<UserProfile/>}/>
+        <Route path="/profiles" element={<Profiles/>}/>
+        {/* <Route path="/profile/:email/:name" element={<Profile/>} /> */}
+        <Route path="/profile/:email/:name/:photoURL" element={<Profile />} />        
       </Routes>
     </Router>
     </>    

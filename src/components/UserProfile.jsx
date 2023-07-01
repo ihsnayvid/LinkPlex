@@ -34,7 +34,7 @@ const UserProfile = () => {
   
     if (user) {
       await fetchUserPosts();
-      console.log(userPosts);
+      // console.log(userPosts);
     }
     })();
 }, []);
