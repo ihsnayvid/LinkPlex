@@ -6,7 +6,7 @@ import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import Profiles from "./components/Profiles";
 import Profile from "./components/Profile";
-import Comments from "./components/Comments";
+import Comments from "./components/comments";
 
 import './styles/App.scss';
 
