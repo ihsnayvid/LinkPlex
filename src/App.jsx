@@ -25,7 +25,6 @@ function App() {
         <Route path="/login" element={<Login/>}/>
         <Route path="/userProfile" element={<UserProfile/>}/>
         <Route path="/profiles" element={<Profiles/>}/>
-        {/* <Route path="/profile/:email/:name" element={<Profile/>} /> */}
         <Route path="/profile/:email/:name/:photoURL" element={<Profile />} />        
       </Routes>
     </Router>
