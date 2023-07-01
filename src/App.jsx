@@ -13,30 +13,7 @@ import { getDocs, collection } from 'firebase/firestore';
 
 import './styles/App.scss';
 
-function App() {
-  const [allPosts, setAllPosts] = useState([]);
-
-  const getAllPosts = async () => {
-    const postsCollectionRef = collection(db, "Post");
-    try{
-      const data = await getDocs(postsCollectionRef);
-      // console.log("counting")
-      const filteredData = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setAllPosts(filteredData);
-      // console.log(filteredData);
-    }
-    catch(err){
-      console.log(err.message);
-    }
-     
-  }
-  useEffect(() =>{
-    // console.log("effect from app");
-    getAllPosts();
-  }, []);
+function App() {  
   return (
     <>
 
