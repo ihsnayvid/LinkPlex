@@ -10,13 +10,38 @@ import 'react-toastify/dist/ReactToastify.css'
 
 
 const StyledBox = styled(Box)`
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background:#F1C27B;
+  width:800px;
+  height:90vh;
+  overflow-y:scroll;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  &::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #16FF00;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #293462;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #9CFF2E;
+  }
 `;
 const FormBox = styled(Box)`
-    width:50%;
+    width:80%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,7 +55,7 @@ const StyledButtons = styled(Button)`
     width:80%;
     margin: 10px 0px;
     color:white;
-    background:blue;
+    background:#2D4356;
 `
 const LinksBox = styled(Box)`
     margin: 10px 0px;
@@ -51,14 +76,29 @@ const DangerButton = styled(Button)`
 `
 const DescriptionText= styled(TextareaAutosize)`
     width:80% !important;
+    background:#F1C27B;
+    border: 1px solid black;
+    border-radius:5px;
 `
 const SubmitButton = styled(Button)`
     width:80%;
-    background:green;
+    background:#435B66;
+    margin-bottom:10px;
     &:hover {
     background-color: darkgreen;
   }
 `
+const regex = /^(ftp|http|https):\/\/[^ "]+$/;
+function validateLinks(array) {
+  for (let i = 0; i < array.length; i++) {
+    const link = array[i].link;
+    const isLink = regex.test(link);
+    if (!isLink) {
+      return false; // Invalid link found
+    }
+  }
+  return true; // All links are valid
+}
 const CreatePost = () => {
   const [formData, setFormData] = useState({
     title: '',
@@ -117,24 +157,47 @@ const handleTagChange = (index) => (e) => {
   },[])
   const handleSubmit = async(e) => {
     e.preventDefault();
-    // console.log("rahul is ",user);
     try{
-      
       const photo = user?.photoURL;
       const name = user?.displayName;
       const email = user?.email;
-      
-      // console.log(auth?.currentUser);
-      
       setFormData((prevData) => ({
         ...prevData,
         photoURL: photo,
         name: name,
         email: email,
       }));
-      
+      if(formData.links.length>0){
+        const isValid = validateLinks(formData.links);
+        if (!isValid) {
+          toast.error('Error! Invalid link found', {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            return;
+        }
+      }
+      else{
+        toast.error('Error! Add atleast one link', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+          return;
+      }
       if(formData.photoURL && formData.email && formData.name){
-        //db insert
+        console.log("post created");
         await addDoc(postsCollectionRef, formData);
         toast.success('Post Created', {
           position: "top-center",
@@ -212,7 +275,7 @@ const handleTagChange = (index) => (e) => {
 
   return (
     <StyledBox>
-      <Typography variant="h4">Create Post</Typography>
+      <Typography marginTop={2} style={{ textDecoration: 'underline' }} variant="h4">Create Post</Typography>
       <FormBox component="form" onSubmit={handleSubmit}>
         <Title
           label="Title"
@@ -243,8 +306,6 @@ const handleTagChange = (index) => (e) => {
         <StyledButtons variant="contained" onClick={handleAddLink}>
           Add Links
         </StyledButtons>
-
-        {/* <Typography variant="h5">Tags</Typography> */}
         {formData.tags.map((tag, index) => (
           <TagsBox key={index} sx={{ display: 'flex', gap: '16px' }}>
             <TextField
@@ -263,10 +324,10 @@ const handleTagChange = (index) => (e) => {
         </StyledButtons>
 
         <DescriptionText
-        //   rowsMin={3}
-        minRows={5}
+          minRows={5}
           placeholder="Description"
           name="description"
+          color="#F1C27B"
           value={formData.description}
           onChange={handleChange}
           required

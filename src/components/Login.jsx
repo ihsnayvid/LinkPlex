@@ -57,13 +57,9 @@ const Login = () => {
     try{
       if(!user){
         await signInWithGoogle();
-        
         //ADDING NEW USER TO DB
-
         // Get the user details from the current user
         const { displayName, email, photoURL, uid } = auth.currentUser;
-
-
           // ------>starts here
         // Check if the user already exists in the 'users' collection
       const userQuerySnapshot = await getDocs(query(userCollectionRef, where('Email', '==', email)));
