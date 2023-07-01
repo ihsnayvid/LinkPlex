@@ -18,6 +18,7 @@ const Header = () => {
             <h1> Welcome!!</h1>
             <main>
                 <Link to = {"/"}> Home </Link>
+                <Link to = {"/profiles"}> Profiles </Link>
                 <Link to = {"/createPost"}> Create Post </Link>       
                 <Link to = {"/login"}> {logState}</Link>         
             </main>

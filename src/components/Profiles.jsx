@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Card, CardContent, CardMedia, Button, Typography, styled, TextField } from '@mui/material';
+import { db } from '../config/firebase';
+import { getDocs, collection } from 'firebase/firestore';
+
 
 const ProfileCard = styled(Card)`
   display: flex;
@@ -28,20 +32,42 @@ const SearchBox = styled(TextField)`
   background-color: white;
 `;
 
-const Profiles = ({ musicArtists }) => {
+// const Profiles = ({ musicArtists }) => {
+  const Profiles = () => {
+  const [allUsers, setAllUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+  // const handleSearchChange = (event) => {
+  //   setSearchQuery(event.target.value);
+  // };
 
-  const filteredArtists = musicArtists.filter((artist) =>
-    artist.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredArtists = musicArtists.filter((artist) =>
+  //   artist.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
+  useEffect(() =>{
+    const getAllUsers = async () => {
+      
+      try{
+        const usersCollectionRef = collection(db, "user");
+        const data = await getDocs(usersCollectionRef);
+        const filteredData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setAllUsers(filteredData);
+        console.log(filteredData);
+      }
+      catch(err){
+        console.log(err.message);
+      }
+       
+    }
+    getAllUsers();
+  }, []);
   return (
     <Box>
-      <SearchBox
+      {/* <SearchBox
         label="Search by User Name"
         value={searchQuery}
         onChange={handleSearchChange}
@@ -58,7 +84,7 @@ const Profiles = ({ musicArtists }) => {
             </CardContent>
           </ProfileCard>
         ))}
-      </Box>
+      </Box> */}
     </Box>
   );
 };
