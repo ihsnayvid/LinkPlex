@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, styled, Typography, Button, TextField } from '@mui/material';
-// import { Favorite, Chat, Delete } from '@mui/icons-material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
-// import { doc, deleteDoc } from "firebase/firestore";
-// import { db } from '../config/firebase';
-// import { ToastContainer, toast } from 'react-toastify';
 import FeedItem from './FeedItem';
+import { db } from '../config/firebase';
+import { getDocs, collection } from 'firebase/firestore';
 
 const topWebsites = [
   {
@@ -126,16 +124,18 @@ const UserNameButton = styled(Button)`
   border: 4px solid rgb(39,39,39);
 `;
 
-const Home = ({ data }) => {
+const Home = () => {
   // useEffect
   const [user,isLoading,error] = useAuthState(auth);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('title');
+  const [allPosts, setAllPosts] = useState([]);
+
   const filterData = () => {
     if (searchQuery === '') {
-      return data;
+      return allPosts;
     } else {
-      return data?.filter(
+      return allPosts?.filter(
         (item) =>
         item?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item?.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -156,6 +156,28 @@ const Home = ({ data }) => {
       return 0;
     });
   };
+
+  const getAllPosts = async () => {
+    const postsCollectionRef = collection(db, "Post");
+    try{
+      const data = await getDocs(postsCollectionRef);
+      console.log("counting")
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setAllPosts(filteredData);
+      // console.log(filteredData);
+    }
+    catch(err){
+      console.log(err.message);
+    }
+     
+  }
+  useEffect(() =>{
+    // console.log("effect from app");
+    getAllPosts();
+  }, []);
   
   
   
@@ -201,7 +223,7 @@ const Home = ({ data }) => {
       </Box>
 
     </SidebarBoxLeft>
-      {data && data.length > 0 ? (
+      {allPosts && allPosts.length > 0 ? (
         sortedData?.map((item, index) => <FeedItem key={index} item={item} />)
       ) : (
         <Typography variant="body1" marginTop={10}>
