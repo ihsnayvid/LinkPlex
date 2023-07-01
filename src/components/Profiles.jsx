@@ -4,7 +4,6 @@ import { Box, Card, CardContent, CardMedia, Button, Typography, styled, TextFiel
 import { db } from '../config/firebase';
 import { getDocs, collection } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-// import { filter } from 'lodash';
 
 
 const ProfileCard = styled(Card)`

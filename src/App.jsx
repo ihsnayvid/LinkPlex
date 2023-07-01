@@ -6,10 +6,7 @@ import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import Profiles from "./components/Profiles";
 import Profile from "./components/Profile";
-import { useEffect, useState } from 'react';
-import { db } from './config/firebase';
-import { getDocs, collection } from 'firebase/firestore';
-
+import Comments from "./components/Comments";
 
 import './styles/App.scss';
 
@@ -26,6 +23,7 @@ function App() {
         <Route path="/userProfile" element={<UserProfile/>}/>
         <Route path="/profiles" element={<Profiles/>}/>
         <Route path="/profile/:email/:name/:photoURL" element={<Profile />} />        
+        <Route path="/Comments/:id" element={<Comments />} />        
       </Routes>
     </Router>
     </>    
