@@ -2,7 +2,7 @@ import React from 'react'
 import GoogleButton from 'react-google-button'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, googleProvider } from "../config/firebase";
 import { db } from '../config/firebase';
@@ -48,9 +48,32 @@ const logout = async () => {
 
 
 const Login = () => {
+
+
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        await logout();
+        toast.info('User Logged out', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+        console.log("Logged out successfully");
+      })();
+    }
+  }, []);
   const userCollectionRef = collection(db, "user");
   
   const handleClick = async () => {
@@ -149,9 +172,7 @@ const Login = () => {
       
     {!user ? (
       <GoogleButton style={{marginTop:"100px"}} type="dark" onClick={handleClick} />
-    ) : (
-      <SubmitButton style={{marginTop:"100px"}} onClick={handleClick}>Logout</SubmitButton>
-    )}
+    ) : null}
     <ToastContainer />
     </div>
   )

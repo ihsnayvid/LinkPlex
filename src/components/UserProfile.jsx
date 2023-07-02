@@ -66,6 +66,7 @@ const UserProfile = () => {
 
 			// Extract the post data from the query snapshot
 			const posts = querySnapshot.docs.map((doc) => doc.data());
+			console.log(posts);
 			setLikedPosts((prevLikedPosts) => [...prevLikedPosts, ...posts]);
 		}
 		catch (error) {
@@ -90,10 +91,33 @@ const UserProfile = () => {
 				await fetchLikedPosts();
 				// console.log(liked);
 
-				liked.map((post, index) => (
-					getPost(post.postId)
-				));
-				console.log(likedPosts);
+				// liked.map(async (post, index) => {
+				// 	await getPost(post.postId);
+				// 	// console.log(post.postId);
+				// });
+				// console.log(likedPosts);
+
+				const likedPostIds = likedPosts.map((post) => post.postId);
+				const likedPostsDetails = [];
+
+				for (const postId of likedPostIds) {
+					console.log("ID is ", postId);
+					try {
+						// Query the posts collection to fetch posts by their ID
+						const postQuery = query(collection(db, 'Post'), where('id', '==', postId));
+						const postQuerySnapshot = await getDocs(postQuery);
+						const post = postQuerySnapshot.docs.map((doc) => doc.data());
+
+						likedPostsDetails.push(post);
+						console.log(post);
+					} catch (error) {
+						console.log('Error fetching liked post details:', error);
+					}
+				}
+
+				setLikedPosts(likedPostsDetails.flat());
+				// console.log(likedPostsDetails);
+				// console.log(likedPosts);
 			}
 		})();
 
