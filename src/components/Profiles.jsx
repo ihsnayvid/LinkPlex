@@ -5,7 +5,8 @@ import { db } from '../config/firebase';
 import { getDocs, collection } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { BounceLoader } from 'react-spinners';
-
+import ghostLoader from '../assets/98432-loading.json';
+import Lottie from 'lottie-react';
 
 const ProfileCard = styled(Card)`
   background:#FCFFE7;
@@ -91,7 +92,8 @@ const SearchBox = styled(TextField)`
           height: '100vh',
         }}
       >
-        <BounceLoader color="#F6FA70" size={300} />
+        {/* <BounceLoader color="#F6FA70" size={300} /> */}
+        <Lottie animationData={ghostLoader}/>
       </Box>
     ) : (
       <>

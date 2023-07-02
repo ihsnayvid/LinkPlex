@@ -1,8 +1,11 @@
-import React from 'react'
-import GoogleButton from 'react-google-button'
+import React from 'react';
+import Lottie from 'lottie-react';
+import hamster from '../assets/95642-sad-dog.json';
+import welcome from '../assets/31548-robot-says-hello.json';
+import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, googleProvider } from "../config/firebase";
 import { db } from '../config/firebase';
@@ -13,7 +16,7 @@ import {
   signInWithRedirect,
   signOut,
 } from "firebase/auth";
-import { Button, styled } from '@mui/material';
+import { Button, styled,Box , Typography } from '@mui/material';
 
 
 const SubmitButton = styled(Button)`
@@ -48,54 +51,26 @@ const logout = async () => {
 
 
 const Login = () => {
-
-
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      (async () => {
-        await logout();
-        toast.info('User Logged out', {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
-        console.log("Logged out successfully");
-      })();
-    }
-  }, []);
-  const userCollectionRef = collection(db, "user");
   
   const handleClick = async () => {
+    const userCollectionRef = collection(db, "user");
     try{
       if(!user){
         await signInWithGoogle();
-        //ADDING NEW USER TO DB
-        // Get the user details from the current user
+        navigate('/');
+        console.log("hello1")
         const { displayName, email, photoURL, uid } = auth.currentUser;
-          // ------>starts here
-        // Check if the user already exists in the 'users' collection
-      const userQuerySnapshot = await getDocs(query(userCollectionRef, where('Email', '==', email)));
-
-      if (userQuerySnapshot.empty) {
-        // User is new, add the user details to the 'users' collection
-        await addDoc(userCollectionRef, {
-          Email: email,
-          Name: displayName,
+        const userQuerySnapshot = await getDocs(query(userCollectionRef, where('Email', '==', email)));
+        
+        if (userQuerySnapshot.empty) {
+          await addDoc(userCollectionRef, {
+            Email: email,
+            Name: displayName,
           Profile: photoURL,
         });
-
-        // console.log('User added to Firestore collection.');
         toast.info('New user created', {
           position: "top-right",
           autoClose: 2000,
@@ -132,9 +107,8 @@ const Login = () => {
           progress: undefined,
           theme: "colored",
           });
-          setTimeout(() => {
-            navigate('/');
-          }, 3000);
+          // setTimeout(() => {
+          // }, 3000);
       }
         // ---------->ends here
         // console.log("logged in successfully");
@@ -168,11 +142,33 @@ const Login = () => {
       justifyContent: 'center',
       marginTop: '50'
     }}>
-
       
     {!user ? (
-      <GoogleButton style={{marginTop:"100px"}} type="dark" onClick={handleClick} />
-    ) : null}
+      <Box style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginTop: '100px'
+      }}>
+        <Lottie animationData={welcome} />
+        <GoogleButton style={{ marginTop: "-10px" }} type="dark" onClick={handleClick} />
+      </Box>
+      
+    ) : (
+      <Box style={{
+        display:'flex',
+        flexDirection:'column',
+        marginTop:'15vh',
+        alignItems:'center',
+        justifyContent:'center',
+        gap:'3vh'
+      }}>
+      <Typography variant="h4">Log out?</Typography>
+      <Typography variant="h6">Are you sure you want to log out of your account?</Typography>
+      <SubmitButton  onClick={handleClick}>Logout</SubmitButton>
+      <Lottie style={{width:"300px"}} animationData={hamster}/>
+      </Box>
+    )}
     <ToastContainer />
     </div>
   )

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+// import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { Box, styled, Typography, Button, TextField } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
 import FeedItem from './FeedItem';
 import { db } from '../config/firebase';
 import { getDocs, collection } from 'firebase/firestore';
+import Lottie from 'lottie-react';
+import loading from '../assets/8471-hamster-wheel-loading.json';
 
 const topWebsites = [
   {
@@ -38,6 +40,7 @@ const topWebsites = [
 
 const SortButton = styled(Button)`
 margin-top:5vh;
+margin-left:2rem;
 border: 4px solid rgb(39,39,39);
 box-shadow: 0.4rem 0.4rem rgb(26,26,26);
 `
@@ -156,19 +159,12 @@ const UserNameButton = styled(Button)`
 `;
 
 const Home = () => {
-  // useEffect
-  // const [user] = useAuthState(auth);
-  // const [searchQuery, setSearchQuery] = useState('');
-  // const [sortOption, setSortOption] = useState('title');
-  // const [allPosts, setAllPosts] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
   const [user] = useAuthState(auth);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('title');
   const [sortDirection, setSortDirection] = useState('asc');
   const [allPosts, setAllPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
 
 
   const filterData = () => {
@@ -206,7 +202,6 @@ const Home = () => {
     const postsCollectionRef = collection(db, "Post");
     try{
       const data = await getDocs(postsCollectionRef);
-      // console.log("counting")
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -221,8 +216,10 @@ const Home = () => {
     }
      
   }
-  getAllPosts()
   useEffect(() =>{
+    // console.log(user.displayName);
+    // console.log(user.email);
+    // console.log(user.photoURL);
     getAllPosts();
   }, []);
   
@@ -286,8 +283,9 @@ const Home = () => {
     </SidebarBoxLeft>
     <Box marginTop={"10vh"}>
     {isLoading ? (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' ,height: "100vh" }}>
-      <ClimbingBoxLoader color="#F6FA70" size={50} />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' ,height: "450vh" }}>
+      {/* <ClimbingBoxLoader color="#F6FA70" size={50} /> */}
+      <Lottie animationData={loading} />
       </Box>
     ) : (
       <>
@@ -303,7 +301,9 @@ const Home = () => {
     </Box>
       <SidebarBoxRight>
         <UserImageCircle src={user?.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} />
-          <Link to={"/userProfile"}>
+          {/* <Link to={"/userProfile"}> */}
+          <Link to={`/profile/${encodeURIComponent(user?.email)}/${encodeURIComponent(user?.displayName)}/${encodeURIComponent(user?.photoURL)}`}>                
+             
         <UserNameButton>
           {user?.displayName || "Anonymous"}
         </UserNameButton>

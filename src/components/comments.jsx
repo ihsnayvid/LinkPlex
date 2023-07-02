@@ -25,7 +25,8 @@ import {
 import {  Delete } from '@mui/icons-material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../config/firebase';
-
+import Lottie from 'lottie-react';
+import loading from '../assets/82519-ghost-preloader-cute-ghost-in-flight-in-a-circle.json';
 const CommentsBox = styled(Box)`
   width:50%;
   padding:10px;
@@ -137,7 +138,8 @@ const Comments = () => {
     <Box marginTop={"10vh"}>
         {isLoading ? (
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '50vh' }}>
-        <BounceLoader color="#F6FA70" size={100} />
+        {/* <BounceLoader color="#F6FA70" size={100} /> */}
+        <Lottie animationData={loading} />
       </Box>
         ) : (
           <>
@@ -162,7 +164,7 @@ const Comments = () => {
                   {
                     cisLoading ? (
                       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '80vh' }}>
-                        <BounceLoader color="#F6FA70" size={100} />
+                        <Lottie animationData={loading} />
                       </Box>
                     ):(
                       <>

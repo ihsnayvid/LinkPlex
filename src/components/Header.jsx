@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState, useEffect } from 'react';
 import { auth } from "../config/firebase";
-
+import img from "../assets/linkplex2.png";
 const Header = () => {
   const [logState, setLogState] = useState("Login");
   const [user, loading, error] = useAuthState(auth);
   useEffect(() =>{
     if(!user) setLogState("Login");
     else setLogState("Logout");
-  }, []);
+  }, [user]);
   return (
     <div >
-        <nav >
-            <h1> Welcome!!</h1>
+        <nav>
+            <Link to = {"/"}><img src={img} alt="Description of the image" style={{width: "18em", height: "5em", marginTop: "20px"}}/></Link>
             <main>
                 <Link to = {"/"}> Home </Link>
                 <Link to = {"/profiles"}> Profiles </Link>

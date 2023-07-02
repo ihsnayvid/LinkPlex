@@ -6,7 +6,8 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import FeedItem from './FeedItem';
 import UserBoxY from './UserBoxY';
 import { Box, Typography} from '@mui/material';
-
+import Lottie from 'lottie-react';
+import ghostLoader from '../assets/82519-ghost-preloader-cute-ghost-in-flight-in-a-circle.json';
 
 const Profile = () => {
     const { email, name, photoURL } = useParams();
@@ -61,7 +62,8 @@ const Profile = () => {
                     height: '50vh',
                     }}
                 >
-                    <BounceLoader color="#F6FA70" size={200} />
+                    {/* <BounceLoader color="#F6FA70" size={200} /> */}
+                    <Lottie animationData={ghostLoader} />
                 </Box>
                 ) : (
                 <>
