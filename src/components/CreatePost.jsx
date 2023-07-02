@@ -108,6 +108,7 @@ const CreatePost = () => {
     photoURL: '',
     name: '',
     email: '',
+    time: '',
   });
   
   const handleChange = (e) => {
@@ -153,20 +154,16 @@ const CreatePost = () => {
         photoURL: photo,
         name: name,
         email: email,
+        time: Date.now(),
       }))
   },[])
   const handleSubmit = async(e) => {
     const postsCollectionRef = collection(db, "Post");
     e.preventDefault();
     try{
-      // const photo = user?.photoURL;
-      // const name = user?.displayName;
-      // const email = user?.email;
       // setFormData((prevData) => ({
       //   ...prevData,
-      //   photoURL: photo,
-      //   name: name,
-      //   email: email,
+      //   time: Date.now(),
       // }));
       if(formData.links.length>0){
         const isValid = validateLinks(formData.links);

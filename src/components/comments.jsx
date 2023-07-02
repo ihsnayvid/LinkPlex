@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { BounceLoader } from 'react-spinners';
 import { useParams } from 'react-router-dom';
 import { db } from '../config/firebase';
 import {
@@ -20,7 +22,7 @@ import {
   TextField,
   IconButton,
 } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import {  Delete } from '@mui/icons-material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../config/firebase';
 
@@ -51,6 +53,9 @@ const Comments = () => {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [user] = useAuthState(auth);
+  const [isLoading, setIsLoading] = useState(true);
+  const [cisLoading, setcIsLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -58,12 +63,14 @@ const Comments = () => {
       const docRef = doc(db, 'Post', postId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        // console.log('Document data:', docSnap.data());
-        setPost(docSnap.data());
+        setPost({...docSnap.data(),id: docSnap.id});
       }
     };
-
-    fetchPost();
+    fetchPost().then(() => {
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -80,8 +87,11 @@ const Comments = () => {
       });
       setComments(fetchedComments);
     };
-
-    fetchComments();
+    fetchComments().then(() => {
+      setcIsLoading(false);
+    }).catch((error) => {
+      setcIsLoading(false);
+    });
   }, []);
 
   const handleCommentSubmit = async (e) => {
@@ -124,82 +134,103 @@ const Comments = () => {
   };
 
   return (
-    <Box>
-      {post ? (
-        <>
-          <FeedItem item={post} />
-          {/* Render other comments components or additional functionality */}
-          <Box my={2}
-            sx={{
-                display:"flex",
-                flexDirection:"column",
-                justifyContent:"center",
-                alignItems:"center",
-              }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Comments
-            </Typography>
-            {comments.length === 0 && (
-              <Typography variant="body2">No comments yet.</Typography>
-            )}
-            {comments.map((comment) => (
-          
+    <Box marginTop={"10vh"}>
+        {isLoading ? (
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '50vh' }}>
+        <BounceLoader color="#F6FA70" size={100} />
+      </Box>
+        ) : (
+          <>
+            {post ? (
+              <>
+                <FeedItem item={post} />
+                {/* Render other comments components or additional functionality */}
+                <Box my={2}
+                  sx={{
+                      display:"flex",
+                      flexDirection:"column",
+                      justifyContent:"center",
+                      alignItems:"center",
+                    }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Comments
+                  </Typography>
+                  {comments.length === 0 && (
+                    <Typography variant="body2">No comments yet.</Typography>
+                  )}
+                  {
+                    cisLoading ? (
+                      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '80vh' }}>
+                        <BounceLoader color="#F6FA70" size={100} />
+                      </Box>
+                    ):(
+                      <>
+                        {comments.map((comment) => (
+                      
 
-              <CommentsBox key={comment.id} mb={2}>
-                <Box
-                  component="img"
-                  sx={{
-                    height: 50,
-                    width: 50,
-                    objectFit: 'cover',
-                    borderRadius: '50%',
-                  }}
-                  src={comment.photoURL}
-                />
-                <CommentAuthor>{comment.name}</CommentAuthor>
-                <CommentText variant="body1">{comment.comment}</CommentText>
-                {user && user.uid === comment.userId && (
-                  <IconButton
-                    color="inherit"
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    <Delete />
-                  </IconButton>
+                          <CommentsBox key={comment.id} mb={2}>
+                            <Box
+                              component="img"
+                              sx={{
+                                height: 50,
+                                width: 50,
+                                objectFit: 'cover',
+                                borderRadius: '50%',
+                              }}
+                              src={comment.photoURL}
+                            />
+                            <Link to={`/profile/${encodeURIComponent(comment.email)}/${encodeURIComponent(comment.name)}/${encodeURIComponent(comment.photoURL)}`}>                
+                            <CommentAuthor>{comment.name}</CommentAuthor>
+                            </Link>
+                            <CommentText variant="body1">{comment.comment}</CommentText>
+                            {user && user.uid === comment.userId && (
+                              <IconButton
+                                color="inherit"
+                                onClick={() => handleDeleteComment(comment.id)}
+                              >
+                                <Delete />
+                              </IconButton>
+                            )}
+                          </CommentsBox>
+                        ))}
+                      </>
+                    )
+                  }
+                </Box>
+                {user && (
+                  <Box>
+                    <form style={{
+                      display:"flex",
+                      flexDirection:"row",
+                      justifyContent:"center",
+                          overflow:"hidden"
+                    }} onSubmit={handleCommentSubmit}>
+                      <TextField
+                        sx={{
+                          width:"45%",
+                          background:"white", 
+                        }}
+                        variant="outlined"
+                        placeholder="Write a comment..."
+                        fullWidth
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                      />
+                      <Button sx={{background:"#40128B"}} type="submit" variant="contained"  mt={1}>
+                        Submit
+                      </Button>
+                    </form>
+                  </Box>
                 )}
-              </CommentsBox>
-            ))}
-          </Box>
-          {user && (
-            <Box>
-              <form style={{
-                display:"flex",
-                flexDirection:"row",
-                justifyContent:"center",
-              }} onSubmit={handleCommentSubmit}>
-                <TextField
-                  sx={{
-                    width:"50%",
-                    background:"white", 
-                  }}
-                  variant="outlined"
-                  placeholder="Write a comment..."
-                  fullWidth
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                />
-                <Button type="submit" variant="contained" color="primary" mt={1}>
-                  Submit
-                </Button>
-              </form>
-            </Box>
-          )}
-        </>
-      ) : (
-        <Box sx={{ padding: '16px' }}>
-          <Typography variant="body1">Loading post...</Typography>
-        </Box>
-      )}
+              </>
+            ) : (
+              <Box sx={{ padding: '16px' }}>
+                <Typography variant="body1">Loading post...</Typography>
+              </Box>
+            )}
+          </>
+        )}
     </Box>
   );
 };
