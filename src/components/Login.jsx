@@ -95,7 +95,7 @@ const Login = () => {
           Profile: photoURL,
         });
 
-        console.log('User added to Firestore collection.');
+        // console.log('User added to Firestore collection.');
         toast.info('New user created', {
           position: "top-right",
           autoClose: 2000,
@@ -121,7 +121,7 @@ const Login = () => {
             }, 3000);
 
       } else {
-        console.log('User already exists in the database.');
+        // console.log('User already exists in the database.');
         toast.success('Signed in Successfully!', {
           position: "top-right",
           autoClose: 3000,
@@ -137,7 +137,7 @@ const Login = () => {
           }, 3000);
       }
         // ---------->ends here
-        console.log("logged in successfully");
+        // console.log("logged in successfully");
       }
       else{
         await logout();        
@@ -154,11 +154,11 @@ const Login = () => {
           setTimeout(() => {
             navigate('/login');
           }, 2000);
-        console.log("Logged out successfully");
+        // console.log("Logged out successfully");
       }
     }
     catch(err){
-      console.log(err.message);
+      // console.log(err.message);
     }
   }
   return (

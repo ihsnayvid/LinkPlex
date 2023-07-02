@@ -11,7 +11,7 @@ const Header = () => {
   useEffect(() =>{
     if(!user) setLogState("Login");
     else setLogState("Logout");
-  }, [user]);
+  }, []);
   return (
     <div >
         <nav >

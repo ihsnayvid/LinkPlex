@@ -13,15 +13,27 @@ import { getStorage } from "firebase/storage";
 //   appId: "1:873902486197:web:d346b73ebf59afb53d44fc",
 //   measurementId: "G-MQWDM6JKR0"
 // };
-const firebaseConfig = {
-  apiKey: "AIzaSyBUiWYGKq5N-q0q_2LXTYoR_AebhL9hcSo",
-  authDomain: "testingfirebase-25fe3.firebaseapp.com",
-  projectId: "testingfirebase-25fe3",
-  storageBucket: "testingfirebase-25fe3.appspot.com",
-  messagingSenderId: "901857257947",
-  appId: "1:901857257947:web:b5e8b99bafcbd052721ffe",
-  measurementId: "G-CQFQKDFYFP"
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBUiWYGKq5N-q0q_2LXTYoR_AebhL9hcSo",
+//   authDomain: "testingfirebase-25fe3.firebaseapp.com",
+//   projectId: "testingfirebase-25fe3",
+//   storageBucket: "testingfirebase-25fe3.appspot.com",
+//   messagingSenderId: "901857257947",
+//   appId: "1:901857257947:web:b5e8b99bafcbd052721ffe",
+//   measurementId: "G-CQFQKDFYFP"
+// };
+
+  // Your web app's Firebase configuration
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDiqDcCdeASk9aeKD6qao4G4Irpk7PU3dc",
+    authDomain: "linkitver2.firebaseapp.com",
+    projectId: "linkitver2",
+    storageBucket: "linkitver2.appspot.com",
+    messagingSenderId: "300750469905",
+    appId: "1:300750469905:web:368e53ba34c27552e6eab0"
+  };
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();

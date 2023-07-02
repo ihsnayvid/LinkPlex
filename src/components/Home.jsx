@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { Box, styled, Typography, Button, TextField } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from "../config/firebase";
@@ -35,6 +36,25 @@ const topWebsites = [
   }
 ];
 
+const SortButton = styled(Button)`
+margin-top:5vh;
+border: 4px solid rgb(39,39,39);
+box-shadow: 0.4rem 0.4rem rgb(26,26,26);
+`
+const DirectionButton = styled(Button)`
+margin-top:5vh;
+margin-left:10%;
+background:#B3FFAE;
+color:black;
+font-size:20px;
+border: 4px solid rgb(39,39,39);
+box-shadow: 0.4rem 0.4rem rgb(26,26,26);
+  &:hover{
+    background:#B3FFAE;
+    scale:1.5;
+    transition:0.3s;
+  }
+`
 
 const HomeContainer = styled(Box)`
   display: flex;
@@ -43,6 +63,8 @@ const HomeContainer = styled(Box)`
   justify-content: center;
 `;
 const TopWeb = styled(Box)`
+  position:absolute;
+  bottom:5vh;
   margin-top:10px;
   width:80%;
   display: flex;
@@ -58,6 +80,10 @@ const WebsiteBox = styled(Box)`
   align-items: center;
   background-color: #ffffff;
   padding: 6px;
+  &:hover{
+    scale:1.5;
+    transition:0.3s;
+  }
 `;
 
 const WebsiteLogo = styled('img')`
@@ -67,13 +93,14 @@ const WebsiteLogo = styled('img')`
 `;
 
 const SearchBox = styled(TextField)`
-  margin-top:50px;
+  margin-top:30vh;
   background-color: #F5F5F5;
   border-radius: 4px;
 
   & .MuiOutlinedInput-root {
     & fieldset {
-      border:4px solid rgb(39,39,39); 
+      border: 4px solid rgb(39,39,39);
+      box-shadow: 0.4rem 0.4rem rgb(26,26,26);
     }
     &.Mui-focused fieldset {
       border:4px solid blue; 
@@ -83,6 +110,8 @@ const SearchBox = styled(TextField)`
 
 
 const SidebarBoxLeft = styled(Box)`
+  border: 4px solid rgb(39,39,39);
+  box-shadow: 0.4rem 0.4rem rgb(26,26,26);
   position: fixed;
   width: 20%;
   top: 0;
@@ -96,6 +125,8 @@ const SidebarBoxLeft = styled(Box)`
   border-right:4px solid rgb(39,39,39); 
 `;
 const SidebarBoxRight = styled(Box)`
+  border: 4px solid rgb(39,39,39);
+  box-shadow: -0.4rem -0.4rem rgb(26,26,26);
   position: fixed;
   width: 20%;
   top: 0;
@@ -110,7 +141,7 @@ const SidebarBoxRight = styled(Box)`
 `;
 
 const UserImageCircle = styled('img')`
-  margin-top:50px;
+  margin-top:10vh;
   width: 150px;
   height: 150px;
   border-radius: 50%;
@@ -126,10 +157,19 @@ const UserNameButton = styled(Button)`
 
 const Home = () => {
   // useEffect
-  const [user,isLoading,error] = useAuthState(auth);
+  // const [user] = useAuthState(auth);
+  // const [searchQuery, setSearchQuery] = useState('');
+  // const [sortOption, setSortOption] = useState('title');
+  // const [allPosts, setAllPosts] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
+  const [user] = useAuthState(auth);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('title');
+  const [sortDirection, setSortDirection] = useState('asc');
   const [allPosts, setAllPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+
 
   const filterData = () => {
     if (searchQuery === '') {
@@ -142,56 +182,64 @@ const Home = () => {
         );
       }
   };
+
   const sortData = (filteredData) => {
     return (filteredData ?? []).sort((a, b) => {
       if (sortOption === 'title') {
         const titleA = a.title ?? '';
         const titleB = b.title ?? '';
-        return titleA.localeCompare(titleB);
+        return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA);
       } else if (sortOption === 'links') {
         const linksA = a.links?.length ?? 0;
         const linksB = b.links?.length ?? 0;
-        return linksB - linksA;
+        return sortDirection === 'asc' ? linksA - linksB : linksB - linksA;
+      } else if (sortOption === 'time') {
+        const timeA = a.time;
+        const timeB = b.time;
+        return sortDirection === 'asc' ? timeA - timeB : timeB - timeA;
       }
       return 0;
     });
   };
-
+  
   const getAllPosts = async () => {
     const postsCollectionRef = collection(db, "Post");
     try{
       const data = await getDocs(postsCollectionRef);
-      console.log("counting")
+      // console.log("counting")
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
       setAllPosts(filteredData);
+      setIsLoading(false);
       // console.log(filteredData);
     }
     catch(err){
       console.log(err.message);
+      setIsLoading(false);
     }
      
   }
+  getAllPosts()
   useEffect(() =>{
-    // console.log("effect from app");
     getAllPosts();
   }, []);
-  
-  
-  
   
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   const handleSortChange = (event) => {
-      setSortOption(event.target.value);
+    setSortOption(event.target.value);
   };
+
+  const handleSortDirectionChange = () => {
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+  };
+
   
   const filteredData = filterData();
-  //  console.log(filteredData)
   const sortedData = sortData(filteredData);
   
   return (
@@ -207,29 +255,52 @@ const Home = () => {
       </Box>
       <Box marginBottom={2}>
         <Typography variant="body1">Sort By:</Typography>
-          <Button
+          <SortButton
             variant={sortOption === 'title' ? 'contained' : 'outlined'}
             onClick={() => setSortOption('title')}
             style={{ marginRight: '8px' }}
           >
           Title
-          </Button>
-          <Button
+          </SortButton>
+          <SortButton
             variant={sortOption === 'links' ? 'contained' : 'outlined'}
             onClick={() => setSortOption('links')}
           >
           Links
-          </Button>
+          </SortButton>
+          <SortButton
+          variant={sortOption === 'time' ? 'contained' : 'outlined'}
+          onClick={() => setSortOption('time')}
+        >
+          Time
+        </SortButton>
+        <DirectionButton
+          variant="outlined"
+          onClick={handleSortDirectionChange}
+          style={{ marginLeft: '' }}
+        >
+          {sortDirection === 'asc' ? '↑' : '↓'}
+        </DirectionButton>
       </Box>
 
     </SidebarBoxLeft>
+    <Box marginTop={"10vh"}>
+    {isLoading ? (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' ,height: "100vh" }}>
+      <ClimbingBoxLoader color="#F6FA70" size={50} />
+      </Box>
+    ) : (
+      <>
       {allPosts && allPosts.length > 0 ? (
         sortedData?.map((item, index) => <FeedItem key={index} item={item} />)
       ) : (
         <Typography variant="body1" marginTop={10}>
           No Posts available.
         </Typography>
-      )}
+      )}  
+      </>
+    )}
+    </Box>
       <SidebarBoxRight>
         <UserImageCircle src={user?.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} />
           <Link to={"/userProfile"}>

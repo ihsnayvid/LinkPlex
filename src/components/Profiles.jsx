@@ -4,11 +4,11 @@ import { Box, Card, CardContent, CardMedia, Button, Typography, styled, TextFiel
 import { db } from '../config/firebase';
 import { getDocs, collection } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import { BounceLoader } from 'react-spinners';
 
 
 const ProfileCard = styled(Card)`
   background:#FCFFE7;
-  ${'' /* border:4px solid rgb(39,39,39); */}
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,6 +41,7 @@ const SearchBox = styled(TextField)`
 
 
   const Profiles = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [allUsers, setAllUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -63,6 +64,7 @@ const SearchBox = styled(TextField)`
           id: doc.id,
         }));
         setAllUsers(filteredData);
+        setIsLoading(false);
         // console.log(filteredData);
       }
       catch(err){
@@ -73,13 +75,26 @@ const SearchBox = styled(TextField)`
     getAllUsers();
   }, []);
   return (
-    <Box>
+    <Box marginTop={"20vh"}>
       <SearchBox
         label="Search by User Name"
         value={searchQuery}
         onChange={handleSearchChange}
         variant="outlined"
       />
+    {isLoading ? (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <BounceLoader color="#F6FA70" size={300} />
+      </Box>
+    ) : (
+      <>
       <Box display="flex" flexWrap="wrap" justifyContent="center" marginTop={20}>
         {filteredArtists.map((artist, index) => (
 
@@ -95,6 +110,8 @@ const SearchBox = styled(TextField)`
           </ProfileCard>
         ))}
       </Box>
+      </>
+    )}
     </Box>
   );
 };

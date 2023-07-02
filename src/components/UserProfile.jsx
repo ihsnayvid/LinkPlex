@@ -25,13 +25,15 @@ const UserProfile = () => {
 				// Query the posts collection to fetch posts by the current user's email
 				const userPostsQuery = query(postsCollectionRef, where('email', '==', userEmail));
 				const querySnapshot = await getDocs(userPostsQuery);
-
-				// Extract the post data from the query snapshot
-				const posts = querySnapshot.docs.map((doc) => doc.data());
+				// const posts = querySnapshot.docs.map((doc) => doc.data());
+				const posts = querySnapshot.docs.map((doc) => ({
+					...doc.data(),
+					id: doc.id,
+				  }));
 				setUserPosts(posts);
 			}
 			catch (error) {
-				console.log('Error fetching user posts:', error);
+				// console.log('Error fetching user posts:', error);
 			}
 		}
 	}
@@ -51,7 +53,7 @@ const UserProfile = () => {
 				setLiked(posts);
 			}
 			catch (error) {
-				console.log('Error fetching liked posts:', error);
+				// console.log('Error fetching liked posts:', error);
 			}
 		}
 	};
@@ -70,12 +72,13 @@ const UserProfile = () => {
 			setLikedPosts((prevLikedPosts) => [...prevLikedPosts, ...posts]);
 		}
 		catch (error) {
-			console.log('Error fetching liked posts:', error);
+			// console.log('Error fetching liked posts:', error);
 		}
 	}
-
+	
 	useEffect(() => {
 		// console.log("effect from user profile");
+		// console.log("user hulala ",userPosts)
 		(async () => {			
 
 			if (user) {
@@ -118,12 +121,14 @@ const UserProfile = () => {
 				setLikedPosts(likedPostsDetails.flat());
 				// console.log(likedPostsDetails);
 				// console.log(likedPosts);
+				for (const post of liked) {
+					await getPost(post.postId);
+				  }
 			}
 		})();
-
 	}, []);
-
-
+	
+	
 	return (
 		<Box>
 			<UserBoxY photoURL={user?.photoURL} displayName={user?.displayName} email={user?.email} />
