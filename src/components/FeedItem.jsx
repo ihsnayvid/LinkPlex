@@ -19,19 +19,43 @@ const DeleteButton = styled(Delete)`
 const StyledBox = styled(Box)`
   user-select: none;
   display: flex;
-  background-color:#F5E9CF;
+  background-color: #F5E9CF;
   flex-direction: column;
-  overflow:hidden;
+  overflow: hidden;
   border: 1px solid lightgray;
   border-radius: 8px;
-  width: 450px;
+  width: 100%;
+  max-width: 450px; /* Added max-width to limit the width on larger screens */
   margin-bottom: 16px;
   margin-top: 60px;
-  box-shadow: 0.7rem 0.7rem rgb(26,26,26);
-  border:4px solid rgb(39,39,39); 
+  box-shadow: 0.7rem 0.7rem rgb(26, 26, 26);
+  border: 4px solid rgb(39, 39, 39);
   margin-left: auto;
   margin-right: auto;
+
+  @media (max-width: 768px) {
+    width: 90%; /* Adjust the width for smaller screens */
+    margin-top: 16px; /* Reduce the top margin on smaller screens */
+  }
 `;
+
+
+// const StyledBox = styled(Box)`
+//   user-select: none;
+//   display: flex;
+//   background-color:#F5E9CF;
+//   flex-direction: column;
+//   overflow:hidden;
+//   border: 1px solid lightgray;
+//   border-radius: 8px;
+//   width: 450px;
+//   margin-bottom: 16px;
+//   margin-top: 60px;
+//   box-shadow: 0.7rem 0.7rem rgb(26,26,26);
+//   border:4px solid rgb(39,39,39); 
+//   margin-left: auto;
+//   margin-right: auto;
+// `;
 
 const UserImage = styled('img')`
   width: 40px;

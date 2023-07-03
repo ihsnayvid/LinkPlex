@@ -36,7 +36,7 @@ const SearchBox = styled(TextField)`
   top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
+  z-index: 1;
   background-color: white;
 `;
 

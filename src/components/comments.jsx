@@ -33,6 +33,7 @@ const CommentsBox = styled(Box)`
   border-radius:10px;
   display: flex;
   align-items: center;
+  min-width:350px;
   margin-bottom: 16px;
   background:white;
   box-shadow: 0.7rem 0.7rem rgb(26,26,26);
@@ -211,6 +212,7 @@ const Comments = () => {
                       <TextField
                         sx={{
                           width:"45%",
+                          minWidth:"300px",
                           background:"white", 
                         }}
                         variant="outlined"

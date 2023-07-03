@@ -20,7 +20,7 @@ const StyledBox = styled(Box)`
   justify-content: center;
   background:#F1C27B;
   width:800px;
-  height:90vh;
+  height:100vh;
   overflow-y:scroll;
   scroll-behavior: smooth;
   scroll-snap-type: y mandatory;
@@ -41,6 +41,7 @@ const StyledBox = styled(Box)`
   }
 `;
 const FormBox = styled(Box)`
+  ${'' /* height:100vh; */}
     width:80%;
   display: flex;
   flex-direction: column;

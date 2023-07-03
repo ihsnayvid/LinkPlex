@@ -74,6 +74,11 @@ const HomeContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media (max-width: 768px) {
+    .hide-sidebar {
+      display: none; /* Hide the sidebars */
+    }
+  }
 `;
 const TopWeb = styled(Box)`
   position:absolute;
@@ -175,6 +180,25 @@ const Home = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [allPosts, setAllPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hideSidebar, setHideSidebar] = useState(false);
+
+  
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setHideSidebar(true);
+      } else {
+        setHideSidebar(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check on component mount
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
 
   const filterData = () => {
@@ -250,7 +274,9 @@ const Home = () => {
   const sortedData = sortData(filteredData);
   
   return (
-    <HomeContainer >
+    <HomeContainer className='hide-sidebar' >
+      {!hideSidebar && (
+        <>
     <SidebarBoxLeft>
       <Box marginBottom={2}>
         <SearchBox
@@ -291,6 +317,8 @@ const Home = () => {
       </Box>
 
     </SidebarBoxLeft>
+        </>
+      )}
     <Box marginTop={"10vh"}>
     {isLoading ? (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' ,height: "450vh" }}>
@@ -309,6 +337,8 @@ const Home = () => {
       </>
     )}
     </Box>
+    {!hideSidebar && (
+        <>
       <SidebarBoxRight>
         <UserImageCircle src={user?.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} />
           {/* <Link to={"/userProfile"}> */}
@@ -330,6 +360,8 @@ const Home = () => {
           ))}
         </TopWeb>
       </SidebarBoxRight>
+        </>
+      )}
     </HomeContainer>
   );
 };
