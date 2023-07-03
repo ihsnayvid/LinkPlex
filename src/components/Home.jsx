@@ -38,26 +38,36 @@ const topWebsites = [
   }
 ];
 
+
+
 const SortButton = styled(Button)`
-margin-top:5vh;
-margin-left:2rem;
-border: 4px solid rgb(39,39,39);
-box-shadow: 0.4rem 0.4rem rgb(26,26,26);
-`
-const DirectionButton = styled(Button)`
-margin-top:5vh;
-margin-left:10%;
-background:#B3FFAE;
-color:black;
-font-size:20px;
-border: 4px solid rgb(39,39,39);
-box-shadow: 0.4rem 0.4rem rgb(26,26,26);
-  &:hover{
-    background:#B3FFAE;
-    scale:1.5;
-    transition:0.3s;
+  margin-top: 5vh;
+  margin-left: 2rem;
+  border: 4px solid rgb(39, 39, 39);
+  box-shadow: 0.4rem 0.4rem rgb(26, 26, 26);
+
+  &:hover {
+    background-color: transparent; /* Add transparent background on hover */
+    scale: 1.5;
+    transition: 0.3s;
   }
-`
+`;
+
+const DirectionButton = styled(Button)`
+  margin-top: 5vh;
+  margin-left: 10%;
+  background: #b3ffae;
+  color: black;
+  font-size: 20px;
+  border: 4px solid rgb(39, 39, 39);
+  box-shadow: 0.4rem 0.4rem rgb(26, 26, 26);
+
+  &:hover {
+    background: #b3ffae;
+    scale: 1.5;
+    transition: 0.3s;
+  }
+`;
 
 const HomeContainer = styled(Box)`
   display: flex;
@@ -96,7 +106,7 @@ const WebsiteLogo = styled('img')`
 `;
 
 const SearchBox = styled(TextField)`
-  margin-top:30vh;
+  margin-top:20vh;
   background-color: #F5F5F5;
   border-radius: 4px;
 
@@ -250,12 +260,12 @@ const Home = () => {
           variant="outlined"
         />
       </Box>
-      <Box marginBottom={2}>
+      <Box marginBottom={2} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
         <Typography variant="body1">Sort By:</Typography>
           <SortButton
             variant={sortOption === 'title' ? 'contained' : 'outlined'}
             onClick={() => setSortOption('title')}
-            style={{ marginRight: '8px' }}
+            // style={{ marginRight: '8px' }}
           >
           Title
           </SortButton>
