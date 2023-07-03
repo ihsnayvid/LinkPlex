@@ -121,7 +121,7 @@ const FeedItem = ({ item }) => {
 
         setLikesCount(likesQuerySnapshot.size);
       } catch (error) {
-        // console.error("Error fetching like state:", error);
+        console.log("Error fetching like state:", error);
       }
     };
 
@@ -134,13 +134,13 @@ const FeedItem = ({ item }) => {
 
         setCommentsCount(commentsQuerySnapshot.size);
       } catch (error) {
-        // console.error("Error fetching comments count:", error);
+        console.log("Error fetching comments count:", error);
       }
     };
 
     fetchLikeState();
     fetchCommentsCount();
-  }, []);
+  }, [item]);
 
   const toggleLike = async () => {
     const userId = user?.email;
@@ -165,7 +165,7 @@ const FeedItem = ({ item }) => {
         setIsLiked(true);
         setLikesCount(likesCount + 1);
       } catch (error) {
-        // console.error("Error adding like:", error);
+        console.add("Error adding like:", error);
       }
     }
   };
